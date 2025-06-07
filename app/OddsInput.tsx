@@ -28,6 +28,7 @@ export default function OddsInput({ initialOdds }: { initialOdds: string[] }) {
             <input
               type="text"
               {...{ placeholder }}
+              autoFocus={index === 0}
               value={values[index]}
               onChange={({ target: { value } }) => {
                 setValues((prev) => {
