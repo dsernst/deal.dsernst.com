@@ -10,24 +10,31 @@ export const Calculation = ({
   const midpoint = (Number(odds1) + Number(odds2)) / 2
   const opposite = 100 - midpoint
   const gcf = gcd(midpoint, opposite)
+  const reducedIsntNormalized = midpoint / gcf !== 1
 
   return (
-    <div className="mt-8">
+    <div className="mt-8 *:flex *:justify-between *:gap-4">
       <h2 className="text-lg font-bold mb-4 text-gray-500">Calculation</h2>
 
       <p>
         <b>Midpoint:</b> {midpoint}%
       </p>
-      <p className="text-xs flex justify-between text-gray-500">
+      <p className="text-xs text-gray-500">
         <b>Opposite:</b> {opposite}%
       </p>
 
-      <p className="mt-6 text-xs flex justify-between text-gray-500">
-        <span>Split:</span> {midpoint} : {opposite}
+      <p className="mt-6 text-xs text-gray-500">
+        <b>Split:</b> {midpoint} : {opposite}
       </p>
-      <p className="">
+      <p className={reducedIsntNormalized ? 'text-xs text-gray-500' : ''}>
         <b>Reduced:</b> {midpoint / gcf} : {opposite / gcf}
       </p>
+
+      {reducedIsntNormalized && (
+        <p>
+          <b>Normalized:</b> {1} : {round(opposite / midpoint, 2)}
+        </p>
+      )}
     </div>
   )
 }
@@ -42,4 +49,13 @@ function gcd(a: number, b: number): number {
     a = temp
   }
   return Math.abs(a)
+}
+
+/** Round a number to a given number of decimal places.
+
+round(3.14159265, 2)  → 3.14  
+round(3.14159265, 4)  → 3.1416 */
+export function round(value: number, digits: number): number {
+  const factor = Math.pow(10, digits)
+  return Math.round(value * factor) / factor
 }
