@@ -11,6 +11,7 @@ export const Calculation = ({
   const opposite = 100 - midpoint
   const gcf = gcd(midpoint, opposite)
   const reducedIsntNormalized = midpoint / gcf !== 1
+  const normalized = midpoint < 50 ? opposite / midpoint : midpoint / opposite
 
   return (
     <div className="mt-8 *:flex *:justify-between *:gap-4">
@@ -35,11 +36,8 @@ export const Calculation = ({
           <b>Normalized:</b>{' '}
           <span>
             {1} :{' '}
-            <span
-              className="cursor-help"
-              title={`${round(opposite / midpoint, 6)}`}
-            >
-              {round(opposite / midpoint, 2)}
+            <span className="cursor-help" title={`${round(normalized, 6)}`}>
+              {round(normalized, 2)}
             </span>
           </span>
         </p>
