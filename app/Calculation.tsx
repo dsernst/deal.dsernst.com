@@ -1,13 +1,17 @@
 export const Calculation = ({
-  odds1,
-  odds2,
+  odds1: odd1String,
+  odds2: odd2String,
 }: {
   odds1: string
   odds2: string
 }) => {
+  const odds1 = Number(odd1String)
+  const odds2 = Number(odd2String)
   if (!odds1 || !odds2) return null
+  if (odds1 === 0 || odds2 === 0) return null
+  if (Number.isNaN(odds1) || Number.isNaN(odds2)) return null
 
-  const midpoint = (Number(odds1) + Number(odds2)) / 2
+  const midpoint = (odds1 + odds2) / 2
   const opposite = 100 - midpoint
   const gcf = gcd(midpoint, opposite)
   const reducedIsntNormalized = midpoint / gcf !== 1
@@ -18,11 +22,11 @@ export const Calculation = ({
       <div className="flex justify-between gap-2 text-center w-42 mt-2">
         <div className="flex flex-col items-center">
           <div>${round(normalized, 2)}</div>
-          <div className="text-sm text-red-500/50">NO</div>
+          {odds1 < odds2 ? <NoLabel /> : <YesLabel />}
         </div>
         <div className="flex flex-col items-center">
           <div>$1</div>
-          <div className="text-sm text-green-500/50">YES</div>
+          {odds2 >= odds1 ? <YesLabel /> : <NoLabel />}
         </div>
       </div>
 
@@ -60,6 +64,14 @@ export const Calculation = ({
     </div>
   )
 }
+
+// Parameterize YES/NO labels
+const colors = { YES: 'text-green-500/50', NO: 'text-red-500/50' }
+const Label = ({ label }: { label: 'YES' | 'NO' }) => (
+  <div className={`text-sm ${colors[label]}`}>{label}</div>
+)
+const NoLabel = () => <Label label="NO" />
+const YesLabel = () => <Label label="YES" />
 
 /** Here’s a clean, simple TypeScript function to compute Greatest Common Factor (GCF), also called Greatest Common Divisor (GCD), using the Euclidean algorithm. 
 
