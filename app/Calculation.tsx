@@ -35,8 +35,8 @@ export const Calculation = ({
         </div>
       </div>
 
-      <h2 className="text-lg font-bold mb-4 text-gray-500 mt-12">
-        Calculation
+      <h2 className="text-sm font-bold mb-4 text-gray-500 mt-12">
+        Payout Calculations
       </h2>
 
       <div className="*:flex *:justify-between *:gap-4">
