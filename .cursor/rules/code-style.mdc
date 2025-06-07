@@ -1,0 +1,23 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Cursor Style Guide
+
+## Data Structure Patterns
+
+High level rule: "Prefer simple and clean, over complex".
+
+- Prefer simple arrays of primitive values over arrays of objects when possible
+- Use numbers instead of strings when the data is numeric, even if it will be displayed as a string
+- Avoid storing display formatting (like '%') in the data layer
+
+## React/JSX Patterns
+- Remove unused attributes (like `id` when not needed for functionality)
+- Keep data transformation close to where it's used (like appending '%' in the JSX)
+- Use inline arrays for small, static data sets instead of declaring variables
+- Use array indices for generating keys when the data is static and order won't change
+
+## Code Organization
+- Minimize intermediate variables when they don't add clarity
