@@ -12,7 +12,7 @@ export default function OddsInput({ initialOdds }: { initialOdds: string[] }) {
   }, [initialOdds])
 
   // Sync values with URL
-  useUrlSync(values)
+  useUrlSync([values[0], values[1]])
 
   return (
     <div className="flex gap-4">

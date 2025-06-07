@@ -1,5 +1,1 @@
-import { redirect } from 'next/navigation'
-
-export default function Home() {
-  redirect('/30/75')
-}
+export { Content as default } from './Content'
