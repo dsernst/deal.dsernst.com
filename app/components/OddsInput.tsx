@@ -1,19 +1,16 @@
 'use client'
 
-import { useSearchParams, useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
-export default function OddsInput() {
-  const searchParams = useSearchParams()
+export default function OddsInput({ initialOdds }: { initialOdds: string[] }) {
   const router = useRouter()
   const [values, setValues] = useState(['', ''])
 
-  // Initialize from URL params
+  // Initialize from route params
   useEffect(() => {
-    const odds1 = searchParams.get('odds1')
-    const odds2 = searchParams.get('odds2')
-    setValues([odds1 || '', odds2 || ''])
-  }, [searchParams])
+    setValues(initialOdds)
+  }, [initialOdds])
 
   /** Set values into URL */
   const updateValue = (index: number, value: string) => {
@@ -21,10 +18,9 @@ export default function OddsInput() {
     newValues[index] = value
     setValues(newValues)
 
-    // Update URL
-    const params = new URLSearchParams(searchParams.toString())
-    params.set(`odds${index + 1}`, value)
-    router.push(`?${params.toString()}`)
+    // Update URL path
+    const newPath = `/${newValues[0]}/${newValues[1]}`
+    router.replace(newPath)
   }
 
   return (
