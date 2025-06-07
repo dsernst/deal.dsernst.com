@@ -14,34 +14,49 @@ export const Calculation = ({
   const normalized = midpoint < 50 ? opposite / midpoint : midpoint / opposite
 
   return (
-    <div className="mt-8 *:flex *:justify-between *:gap-4">
-      <h2 className="text-lg font-bold mb-4 text-gray-500">Calculation</h2>
+    <div>
+      <div className="flex justify-between gap-2 text-center w-42 mt-2">
+        <div className="flex flex-col items-center">
+          <div>${round(normalized, 2)}</div>
+          <div className="text-sm text-red-500/50">NO</div>
+        </div>
+        <div className="flex flex-col items-center">
+          <div>$1</div>
+          <div className="text-sm text-green-500/50">YES</div>
+        </div>
+      </div>
 
-      <p>
-        <b>Midpoint:</b> {midpoint}%
-      </p>
-      <p className="text-xs text-gray-500">
-        <b>Opposite:</b> {opposite}%
-      </p>
+      <h2 className="text-lg font-bold mb-4 text-gray-500 mt-12">
+        Calculation
+      </h2>
 
-      <p className="mt-6 text-xs text-gray-500">
-        <b>Split:</b> {midpoint} : {opposite}
-      </p>
-      <p className={reducedIsntNormalized ? 'text-xs text-gray-500' : ''}>
-        <b>Reduced:</b> {midpoint / gcf} : {opposite / gcf}
-      </p>
-
-      {reducedIsntNormalized && (
+      <div className="*:flex *:justify-between *:gap-4">
         <p>
-          <b>Normalized:</b>{' '}
-          <span>
-            {1} :{' '}
-            <span className="cursor-help" title={`${round(normalized, 6)}`}>
-              {round(normalized, 2)}
-            </span>
-          </span>
+          <b>Midpoint:</b> {midpoint}%
         </p>
-      )}
+        <p className="text-xs text-gray-500">
+          <b>Opposite:</b> {opposite}%
+        </p>
+
+        <p className="mt-6 text-xs text-gray-500">
+          <b>Split:</b> {midpoint} : {opposite}
+        </p>
+        <p className={reducedIsntNormalized ? 'text-xs text-gray-500' : ''}>
+          <b>Reduced:</b> {midpoint / gcf} : {opposite / gcf}
+        </p>
+
+        {reducedIsntNormalized && (
+          <p>
+            <b>Normalized:</b>{' '}
+            <span>
+              {1} :{' '}
+              <span className="cursor-help" title={`${round(normalized, 6)}`}>
+                {round(normalized, 2)}
+              </span>
+            </span>
+          </p>
+        )}
+      </div>
     </div>
   )
 }
