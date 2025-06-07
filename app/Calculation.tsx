@@ -19,6 +19,7 @@ export const Calculation = ({
     gcf,
     normalized,
     reducedIsntNormalized,
+    leftEv,
   } = bet
 
   return (
@@ -65,6 +66,11 @@ export const Calculation = ({
             </span>
           </p>
         )}
+
+        <p className="text-xs mt-6 text-gray-500">
+          <i>Expected Value:</i>+{round(leftEv * 100, 1)}%
+        </p>
+        <p className="text-xs text-gray-700">for both sides</p>
       </div>
     </div>
   )
