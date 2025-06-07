@@ -1,5 +1,5 @@
 import { expect, test, describe } from 'bun:test'
-import { calcBet, round } from './calcBet'
+import { calcBet, round, type Label } from './calcBet'
 
 describe('round()', () => {
   test('rounds to specified decimal places', () => {
@@ -18,7 +18,7 @@ describe('round()', () => {
 })
 
 describe('calcBet()', () => {
-  test('returns null for invalid inputs', () => {
+  test('null for invalid inputs', () => {
     expect(calcBet(0, 50)).toBeNull()
     expect(calcBet(50, 0)).toBeNull()
     expect(calcBet(NaN, 50)).toBeNull()
@@ -26,47 +26,45 @@ describe('calcBet()', () => {
     expect(calcBet(0, 0)).toBeNull()
   })
 
-  test('calculates correct labels when odds1 > odds2', () => {
-    const result = calcBet(60, 40)
-    expect(result).not.toBeNull()
-    expect(result?.leftLabel).toBe('YES')
-    expect(result?.rightLabel).toBe('NO')
-  })
+  type Odds = [number, number]
+  type Expected = {
+    left: [Label, number]
+    right: [Label, number]
+    midpoint: number
+    opposite?: number
+    normalized?: number
+  }
+  const validInputTestCases: [Odds, Expected][] = [
+    [
+      [60, 40], // odds1 > odds2
+      {
+        left: ['YES', 1],
+        right: ['NO', 1],
+        midpoint: 50,
+        opposite: 50,
+        normalized: 1,
+      },
+    ],
+    [[40, 60], { left: ['NO', 1], right: ['YES', 1], midpoint: 50 }],
+    [[50, 50], { left: ['NO', 1], right: ['YES', 1], midpoint: 50 }],
+    [[75, 25], { left: ['YES', 1], right: ['NO', 1], midpoint: 50 }],
+    [[99, 1], { left: ['YES', 1], right: ['NO', 1], midpoint: 50 }],
+  ]
 
-  test('calculates correct labels when odds1 < odds2', () => {
-    const result = calcBet(40, 60)
-    expect(result).not.toBeNull()
-    expect(result?.leftLabel).toBe('NO')
-    expect(result?.rightLabel).toBe('YES')
-  })
+  validInputTestCases.forEach(([[odds1, odds2], expected]) => {
+    test(`${odds1} vs ${odds2}`, () => {
+      const result = calcBet(odds1, odds2)
+      expect(result).not.toBeNull()
+      if (!result) throw new Error('Result should not be null')
 
-  test('calculates correct amounts for balanced odds', () => {
-    const result = calcBet(50, 50)
-    expect(result).not.toBeNull()
-    expect(result?.leftAmount).toBe(1)
-    expect(result?.rightAmount).toBe(1)
-  })
-
-  test('calculates correct amounts for unbalanced odds', () => {
-    const result = calcBet(75, 25)
-    expect(result).not.toBeNull()
-    expect(result?.midpoint).toBe(50)
-    expect(result?.opposite).toBe(50)
-    expect(result?.normalized).toBe(1)
-  })
-
-  test('calculates correct normalized values', () => {
-    const result = calcBet(80, 20)
-    expect(result).not.toBeNull()
-    expect(result?.midpoint).toBe(50)
-    expect(result?.opposite).toBe(50)
-    expect(result?.normalized).toBe(1)
-  })
-
-  test('handles edge cases', () => {
-    const result = calcBet(99, 1)
-    expect(result).not.toBeNull()
-    expect(result?.midpoint).toBe(50)
-    expect(result?.opposite).toBe(50)
+      expect(result.leftLabel).toBe(expected.left[0])
+      expect(result.rightLabel).toBe(expected.right[0])
+      expect(result.leftAmount).toBe(expected.left[1])
+      expect(result.rightAmount).toBe(expected.right[1])
+      expect(result.midpoint).toBe(expected.midpoint)
+      if (expected.opposite) expect(result.opposite).toBe(expected.opposite)
+      if (expected.normalized)
+        expect(result.normalized).toBe(expected.normalized)
+    })
   })
 })
