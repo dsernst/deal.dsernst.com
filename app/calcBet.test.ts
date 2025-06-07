@@ -39,8 +39,8 @@ describe('calcBet()', () => {
     [
       [60, 40], // odds1 > odds2
       {
-        left: ['YES', 1],
-        right: ['NO', 1],
+        left: ['YES', 1, 0.2],
+        right: ['NO', 1, 0.2],
         midpoint: 50,
         opposite: 50,
         normalized: 1,
@@ -50,7 +50,7 @@ describe('calcBet()', () => {
     [[50, 50], { left: ['NO', 1], right: ['YES', 1], midpoint: 50 }],
     [[75, 25], { left: ['YES', 1], right: ['NO', 1], midpoint: 50 }],
     [[99, 1], { left: ['YES', 1], right: ['NO', 1], midpoint: 50 }],
-    [[70, 20], { left: ['YES', 1], right: ['NO', 1.22], midpoint: 45 }],
+    [[70, 20], { left: ['YES', 1, 0.556], right: ['NO', 1.22], midpoint: 45 }],
     [[20, 70], { left: ['NO', 1.22], right: ['YES', 1] }],
     [[48, 52], { left: ['NO', 1], right: ['YES', 1] }],
     [[2, 40], { left: ['NO', 3.76], right: ['YES', 1] }],
