@@ -30,7 +30,7 @@ describe('calcBet()', () => {
   type Expected = {
     left: [Label, number]
     right: [Label, number]
-    midpoint: number
+    midpoint?: number
     opposite?: number
     normalized?: number
   }
@@ -49,6 +49,8 @@ describe('calcBet()', () => {
     [[50, 50], { left: ['NO', 1], right: ['YES', 1], midpoint: 50 }],
     [[75, 25], { left: ['YES', 1], right: ['NO', 1], midpoint: 50 }],
     [[99, 1], { left: ['YES', 1], right: ['NO', 1], midpoint: 50 }],
+    [[70, 20], { left: ['YES', 1], right: ['NO', 1.22], midpoint: 45 }],
+    [[20, 70], { left: ['NO', 1.22], right: ['YES', 1] }],
   ]
 
   validInputTestCases.forEach(([[odds1, odds2], expected]) => {
@@ -59,9 +61,9 @@ describe('calcBet()', () => {
 
       expect(result.leftLabel).toBe(expected.left[0])
       expect(result.rightLabel).toBe(expected.right[0])
-      expect(result.leftAmount).toBe(expected.left[1])
-      expect(result.rightAmount).toBe(expected.right[1])
-      expect(result.midpoint).toBe(expected.midpoint)
+      expect(round(result.leftAmount, 2)).toBe(expected.left[1])
+      expect(round(result.rightAmount, 2)).toBe(expected.right[1])
+      if (expected.midpoint) expect(result.midpoint).toBe(expected.midpoint)
       if (expected.opposite) expect(result.opposite).toBe(expected.opposite)
       if (expected.normalized)
         expect(result.normalized).toBe(expected.normalized)
