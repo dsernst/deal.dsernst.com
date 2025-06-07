@@ -3,7 +3,7 @@
 import { usePathname } from 'next/navigation'
 import { Calculation } from './Calculation'
 import OddsInput from './OddsInput'
-import { title, description } from './page'
+import { title, description } from './constants'
 
 export function Content() {
   // Ensure we always have two values, even if URL is partial
