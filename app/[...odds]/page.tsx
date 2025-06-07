@@ -1,11 +1,12 @@
-import OddsInput from '../../components/OddsInput'
+import OddsInput from '../components/OddsInput'
 
 export default async function Home({
   params,
 }: {
-  params: Promise<{ odds1: string; odds2: string }>
+  params: Promise<{ odds?: string[] }>
 }) {
-  const { odds1, odds2 } = await params
+  // Ensure we always have two values, even if URL is partial
+  const [odds1 = '', odds2 = ''] = (await params).odds || []
 
   return (
     <div className="min-h-screen p-8 flex flex-col items-center justify-center">
