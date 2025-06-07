@@ -1,3 +1,4 @@
+import { Calculation } from './Calculation'
 import OddsInput from './OddsInput'
 
 export async function Content({
@@ -17,6 +18,8 @@ export async function Content({
 
       {/* Odds inputs */}
       <OddsInput initialOdds={[odds1, odds2]} />
+
+      <Calculation {...{ odds1, odds2 }} />
     </div>
   )
 }
