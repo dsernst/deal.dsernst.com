@@ -1,41 +1,18 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState } from 'react'
+import { useUrlSync } from '../hooks/useUrlSync'
 
 export default function OddsInput({ initialOdds }: { initialOdds: string[] }) {
-  const router = useRouter()
   const [values, setValues] = useState(['', ''])
-  const timeoutRef = useRef<NodeJS.Timeout | undefined>(undefined)
 
   // Initialize from route params
   useEffect(() => {
     setValues(initialOdds)
   }, [initialOdds])
 
-  /** Set values into URL */
-  const updateValue = (index: number, value: string) => {
-    const newValues = [...values]
-    newValues[index] = value
-    setValues(newValues)
-
-    // Clear any existing timeout
-    if (timeoutRef.current) clearTimeout(timeoutRef.current)
-
-    // Set new timeout for URL update
-    timeoutRef.current = setTimeout(() => {
-      const newPath = `/${newValues[0]}/${newValues[1]}`
-      router.replace(newPath)
-    }, 1500)
-  }
-
-  // Cleanup timeout on unmount
-  useEffect(
-    () => () => {
-      if (timeoutRef.current) clearTimeout(timeoutRef.current)
-    },
-    []
-  )
+  // Sync values with URL
+  useUrlSync(values)
 
   return (
     <div className="flex gap-4">
@@ -52,7 +29,13 @@ export default function OddsInput({ initialOdds }: { initialOdds: string[] }) {
               type="text"
               {...{ placeholder }}
               value={values[index]}
-              onChange={(e) => updateValue(index, e.target.value)}
+              onChange={({ target: { value } }) => {
+                setValues((prev) => {
+                  const newValues = [...prev]
+                  newValues[index] = value
+                  return newValues
+                })
+              }}
               className="px-3 py-2 h-20 w-30 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             <span className="text-gray-400 absolute right-3 top-[23px]">%</span>
