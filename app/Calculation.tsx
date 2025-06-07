@@ -17,16 +17,21 @@ export const Calculation = ({
   const reducedIsntNormalized = midpoint / gcf !== 1
   const normalized = midpoint < 50 ? opposite / midpoint : midpoint / opposite
 
+  const leftLabel: Label = odds1 > odds2 ? 'YES' : 'NO'
+  const rightLabel: Label = leftLabel === 'NO' ? 'YES' : 'NO'
+  const leftAmount = midpoint < 50 && leftLabel === 'NO' ? normalized : 1
+  const rightAmount = leftAmount === 1 ? normalized : 1
+
   return (
     <div>
       <div className="flex justify-between gap-2 text-center w-42 mt-2">
         <div className="flex flex-col items-center">
-          <div>${round(normalized, 2)}</div>
-          {odds1 < odds2 ? <NoLabel /> : <YesLabel />}
+          <div>${round(leftAmount, 2)}</div>
+          <Label label={leftLabel} />
         </div>
         <div className="flex flex-col items-center">
-          <div>$1</div>
-          {odds2 >= odds1 ? <YesLabel /> : <NoLabel />}
+          <div>${round(rightAmount, 2)}</div>
+          <Label label={rightLabel} />
         </div>
       </div>
 
@@ -66,12 +71,11 @@ export const Calculation = ({
 }
 
 // Parameterize YES/NO labels
+type Label = 'YES' | 'NO'
 const colors = { YES: 'text-green-500/50', NO: 'text-red-500/50' }
-const Label = ({ label }: { label: 'YES' | 'NO' }) => (
+const Label = ({ label }: { label: Label }) => (
   <div className={`text-sm ${colors[label]}`}>{label}</div>
 )
-const NoLabel = () => <Label label="NO" />
-const YesLabel = () => <Label label="YES" />
 
 /** Here’s a clean, simple TypeScript function to compute Greatest Common Factor (GCF), also called Greatest Common Divisor (GCD), using the Euclidean algorithm. 
 
