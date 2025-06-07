@@ -18,7 +18,7 @@ export function useUrlSync([v0, v1]: [string, string]) {
       timeoutRef.current = setTimeout(() => {
         console.log('Setting url path:', newPath)
         router.replace(newPath)
-      }, 1500)
+      }, 1000)
     }
 
     // Cleanup on unmount or when values change
