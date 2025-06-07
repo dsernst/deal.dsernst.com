@@ -32,7 +32,16 @@ export const Calculation = ({
 
       {reducedIsntNormalized && (
         <p>
-          <b>Normalized:</b> {1} : {round(opposite / midpoint, 2)}
+          <b>Normalized:</b>{' '}
+          <span>
+            {1} :{' '}
+            <span
+              className="cursor-help"
+              title={`${round(opposite / midpoint, 6)}`}
+            >
+              {round(opposite / midpoint, 2)}
+            </span>
+          </span>
         </p>
       )}
     </div>
