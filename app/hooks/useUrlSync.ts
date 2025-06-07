@@ -1,23 +1,30 @@
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import { useRef, useEffect } from 'react'
 
 export function useUrlSync(values: string[], delay = 1500) {
   const router = useRouter()
+  const pathname = usePathname()
   const timeoutRef = useRef<NodeJS.Timeout | undefined>(undefined)
 
   useEffect(() => {
     // Clear any existing timeout
     if (timeoutRef.current) clearTimeout(timeoutRef.current)
 
-    // Set new timeout for URL update
-    timeoutRef.current = setTimeout(() => {
-      const newPath = `/${values[0]}/${values[1]}`
-      router.replace(newPath)
-    }, delay)
+    // Get current URL values
+    const urlValues = pathname.split('/').slice(1)
+
+    // Only update if values actually changed
+    if (values[0] !== urlValues[0] || values[1] !== urlValues[1]) {
+      timeoutRef.current = setTimeout(() => {
+        const newPath = `/${values[0]}/${values[1]}`
+        console.log('newPath:', newPath)
+        router.replace(newPath)
+      }, delay)
+    }
 
     // Cleanup on unmount or when values change
     return () => {
       if (timeoutRef.current) clearTimeout(timeoutRef.current)
     }
-  }, [values, delay, router])
+  }, [values, delay, router, pathname])
 }
