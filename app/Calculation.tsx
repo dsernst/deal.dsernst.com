@@ -57,10 +57,11 @@ export const Calculation = ({
           <p>
             <b>Normalized:</b>{' '}
             <span>
-              {1} :{' '}
+              {midpoint < 50 && <>1 : </>}
               <span className="cursor-help" title={`${round(normalized, 6)}`}>
                 {round(normalized, 2)}
               </span>
+              {midpoint >= 50 && <> : 1</>}
             </span>
           </p>
         )}
