@@ -1,4 +1,4 @@
-import OddsInput from './components/OddsInput'
+import OddsInput from './OddsInput'
 
 export async function Content({
   params,

@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useUrlSync } from '../hooks/useUrlSync'
+import { useUrlSync } from './useUrlSync'
 
 export default function OddsInput({ initialOdds }: { initialOdds: string[] }) {
   const [values, setValues] = useState(['', ''])
