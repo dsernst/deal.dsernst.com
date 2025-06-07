@@ -1,10 +1,8 @@
 import type { Metadata } from 'next'
 import './globals.css'
+import { title, description } from './Content'
 
-export const metadata: Metadata = {
-  title: 'Bet Calculator',
-  description: 'Calculate 2-person bets fast & fairly',
-}
+export const metadata: Metadata = { title, description }
 
 export default function RootLayout({
   children,
