@@ -1,5 +1,7 @@
 # <img src="./app/apple-icon.png" width="20px" />&nbsp; [bet.dsernst.com](https://bet.dsernst.com)
 
+<p align="center"><img src="./public/screenshot.png" width="275px" /></p>
+
 ## Development
 
 This is a [Next.js](https://nextjs.org/) project.
