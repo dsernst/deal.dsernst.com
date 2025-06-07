@@ -1,4 +1,4 @@
-# bet.dsernst.com
+# <img src="./app/apple-icon.png" width="20px" />&nbsp; [bet.dsernst.com](https://bet.dsernst.com)
 
 ## Development
 
