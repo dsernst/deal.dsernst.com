@@ -27,9 +27,10 @@ describe('calcBet()', () => {
   })
 
   type Odds = [number, number]
+  type EV = number
   type Expected = {
-    left: [Label, number]
-    right: [Label, number]
+    left: [Label, number, EV?]
+    right: [Label, number, EV?]
     midpoint?: number
     opposite?: number
     normalized?: number
@@ -56,6 +57,8 @@ describe('calcBet()', () => {
     [[40, 2], { left: ['YES', 1], right: ['NO', 3.76] }],
     [[1, 5], { left: ['NO', 32.33], right: ['YES', 1] }],
     [[10, 90], { left: ['NO', 1], right: ['YES', 1] }],
+    [[10, 50], { left: ['NO', 2.33, 0.667], right: ['YES', 1, 0.667] }],
+    [[50, 10], { left: ['YES', 1, 0.667], right: ['NO', 2.33, 0.667] }],
   ]
 
   validInputTestCases.forEach(([[odds1, odds2], expected]) => {
@@ -72,6 +75,10 @@ describe('calcBet()', () => {
       if (expected.opposite) expect(result.opposite).toBe(expected.opposite)
       if (expected.normalized)
         expect(result.normalized).toBe(expected.normalized)
+      if (expected.left[2])
+        expect(round(result.leftEv, 3)).toBe(expected.left[2])
+      if (expected.right[2])
+        expect(round(result.rightEv, 3)).toBe(expected.right[2])
     })
   })
 })

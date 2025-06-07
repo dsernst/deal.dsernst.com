@@ -13,6 +13,8 @@ export function calcBet(
   gcf: number
   normalized: number
   reducedIsntNormalized: boolean
+  leftEv: number
+  rightEv: number
 } | null {
   if (!odds1 || !odds2) return null
   if (odds1 === 0 || odds2 === 0) return null
@@ -29,6 +31,13 @@ export function calcBet(
   const leftAmount = midpoint < 50 && leftLabel === 'NO' ? normalized : 1
   const rightAmount = leftAmount === 1 ? normalized : 1
 
+  // Calculate Expected Value for each side
+  // EV = (Probability of winning * Amount won) - (Probability of losing * Amount lost)
+  const leftP = odds1 / 100
+  const leftEv = Math.abs(leftP * normalized - (1 - leftP))
+  const rightP = odds2 / 100
+  const rightEv = Math.abs(rightP * normalized - (1 - rightP))
+
   return {
     leftLabel,
     rightLabel,
@@ -39,6 +48,8 @@ export function calcBet(
     gcf,
     normalized,
     reducedIsntNormalized,
+    leftEv,
+    rightEv,
   }
 }
 
