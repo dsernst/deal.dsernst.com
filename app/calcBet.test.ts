@@ -51,10 +51,15 @@ describe('calcBet()', () => {
     [[99, 1], { left: ['YES', 1], right: ['NO', 1], midpoint: 50 }],
     [[70, 20], { left: ['YES', 1], right: ['NO', 1.22], midpoint: 45 }],
     [[20, 70], { left: ['NO', 1.22], right: ['YES', 1] }],
+    [[48, 52], { left: ['NO', 1], right: ['YES', 1] }],
+    [[2, 40], { left: ['NO', 3.76], right: ['YES', 1] }],
+    [[40, 2], { left: ['YES', 1], right: ['NO', 3.76] }],
+    [[1, 5], { left: ['NO', 32.33], right: ['YES', 1] }],
+    [[10, 90], { left: ['NO', 1], right: ['YES', 1] }],
   ]
 
   validInputTestCases.forEach(([[odds1, odds2], expected]) => {
-    test(`${odds1} vs ${odds2}`, () => {
+    test(`${String(odds1).padStart(2, ' ')} vs ${odds2}`, () => {
       const result = calcBet(odds1, odds2)
       expect(result).not.toBeNull()
       if (!result) throw new Error('Result should not be null')
