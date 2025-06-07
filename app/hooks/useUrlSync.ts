@@ -23,8 +23,6 @@ export function useUrlSync(values: string[], delay = 1500) {
     }
 
     // Cleanup on unmount or when values change
-    return () => {
-      if (timeoutRef.current) clearTimeout(timeoutRef.current)
-    }
+    return () => timeoutRef.current && clearTimeout(timeoutRef.current)
   }, [values, delay, router, pathname])
 }
