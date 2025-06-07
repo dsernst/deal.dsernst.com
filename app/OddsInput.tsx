@@ -1,15 +1,16 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useUrlSync } from './useUrlSync'
 
-export default function OddsInput({ initialOdds }: { initialOdds: string[] }) {
-  const [values, setValues] = useState(['', ''])
-
-  // Initialize from route params
-  useEffect(() => {
-    setValues(initialOdds)
-  }, [initialOdds])
+export default function OddsInput({
+  odds1,
+  odds2,
+}: {
+  odds1: string
+  odds2: string
+}) {
+  const [values, setValues] = useState([odds1, odds2])
 
   // Sync values with URL
   useUrlSync([values[0], values[1]])
@@ -28,7 +29,7 @@ export default function OddsInput({ initialOdds }: { initialOdds: string[] }) {
             <input
               type="text"
               {...{ placeholder }}
-              autoFocus={index === 0}
+              autoFocus={index === 0 && !values[0]}
               value={values[index]}
               onChange={({ target: { value } }) => {
                 setValues((prev) => {

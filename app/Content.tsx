@@ -1,13 +1,12 @@
+'use client'
+
+import { usePathname } from 'next/navigation'
 import { Calculation } from './Calculation'
 import OddsInput from './OddsInput'
 
-export async function Content({
-  params,
-}: {
-  params: Promise<{ odds?: string[] }>
-}) {
+export function Content() {
   // Ensure we always have two values, even if URL is partial
-  const [odds1 = '', odds2 = ''] = (await params).odds || []
+  const [odds1 = '', odds2 = ''] = usePathname().split('/').slice(1)
 
   return (
     <div className="min-h-screen p-8 flex flex-col items-center justify-center">
@@ -17,7 +16,7 @@ export async function Content({
       </p>
 
       {/* Odds inputs */}
-      <OddsInput initialOdds={[odds1, odds2]} />
+      <OddsInput {...{ odds1, odds2 }} />
 
       <Calculation {...{ odds1, odds2 }} />
     </div>
