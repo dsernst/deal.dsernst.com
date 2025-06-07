@@ -72,7 +72,7 @@ export const Calculation = ({
 
 // Parameterize YES/NO labels
 type Label = 'YES' | 'NO'
-const colors = { YES: 'text-green-500/50', NO: 'text-red-500/50' }
+const colors = { YES: 'text-green-500/50', NO: 'text-red-500/60' }
 const Label = ({ label }: { label: Label }) => (
   <div className={`text-sm ${colors[label]}`}>{label}</div>
 )
