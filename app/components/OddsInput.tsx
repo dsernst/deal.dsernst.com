@@ -1,11 +1,12 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 
 export default function OddsInput({ initialOdds }: { initialOdds: string[] }) {
   const router = useRouter()
   const [values, setValues] = useState(['', ''])
+  const timeoutRef = useRef<NodeJS.Timeout | undefined>(undefined)
 
   // Initialize from route params
   useEffect(() => {
@@ -18,10 +19,23 @@ export default function OddsInput({ initialOdds }: { initialOdds: string[] }) {
     newValues[index] = value
     setValues(newValues)
 
-    // Update URL path
-    const newPath = `/${newValues[0]}/${newValues[1]}`
-    router.replace(newPath)
+    // Clear any existing timeout
+    if (timeoutRef.current) clearTimeout(timeoutRef.current)
+
+    // Set new timeout for URL update
+    timeoutRef.current = setTimeout(() => {
+      const newPath = `/${newValues[0]}/${newValues[1]}`
+      router.replace(newPath)
+    }, 1500)
   }
+
+  // Cleanup timeout on unmount
+  useEffect(
+    () => () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current)
+    },
+    []
+  )
 
   return (
     <div className="flex gap-4">
