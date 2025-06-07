@@ -8,28 +8,21 @@ export default function Home() {
 
       {/* Odds inputs */}
       <div className="flex gap-4">
-        <div className="flex flex-col">
-          <label htmlFor="odds1" className="text-sm font-medium mb-1">
-            Person 1&apos;s Odds
-          </label>
-          <input
-            type="text"
-            id="odds1"
-            placeholder="30%"
-            className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
-        <div className="flex flex-col">
-          <label htmlFor="odds2" className="text-sm font-medium mb-1">
-            Person 2&apos;s Odds
-          </label>
-          <input
-            type="text"
-            id="odds2"
-            placeholder="75%"
-            className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
+        {[30, 75].map((placeholder, index) => (
+          <div key={`odds${index + 1}`} className="flex flex-col">
+            <label
+              htmlFor={`odds${index + 1}`}
+              className="text-sm font-medium mb-1"
+            >
+              Person {index + 1}&apos;s Odds
+            </label>
+            <input
+              type="text"
+              placeholder={placeholder + '%'}
+              className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+        ))}
       </div>
     </div>
   )
