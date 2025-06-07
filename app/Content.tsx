@@ -3,9 +3,7 @@
 import { usePathname } from 'next/navigation'
 import { Calculation } from './Calculation'
 import OddsInput from './OddsInput'
-
-export const title = 'Bet Calculator'
-export const description = 'Price 2-person bets fast & fairly'
+import { title, description } from './page'
 
 export function Content() {
   // Ensure we always have two values, even if URL is partial

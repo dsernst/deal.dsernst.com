@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import './globals.css'
-import { title, description } from './Content'
+import { title, description } from './page'
 
 export const metadata: Metadata = { title, description }
 
