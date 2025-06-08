@@ -8,7 +8,12 @@ export const Calculation = ({
   odds2: string
 }) => {
   const bet = calcBet(+odds1, +odds2)
-  if (!bet) return null
+  if (!bet)
+    return (
+      <div className="opacity-30 italic h-78 pt-8">
+        Enter odds for calculation
+      </div>
+    )
   const {
     leftLabel,
     rightLabel,
