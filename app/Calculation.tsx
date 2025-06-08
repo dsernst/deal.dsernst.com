@@ -1,4 +1,4 @@
-import { calcBet, round, type Label } from './calcBet'
+import { calcBet, type Label, round } from './calcBet'
 
 export const Calculation = ({
   odds1,
@@ -15,17 +15,17 @@ export const Calculation = ({
       </div>
     )
   const {
-    leftLabel,
-    rightLabel,
-    leftAmount,
-    rightAmount,
-    midpoint,
-    opposite,
     gcf,
-    normalized,
-    reducedIsntNormalized,
     isReducible,
+    leftAmount,
     leftEv,
+    leftLabel,
+    midpoint,
+    normalized,
+    opposite,
+    reducedIsntNormalized,
+    rightAmount,
+    rightLabel,
   } = bet
 
   return (
@@ -85,7 +85,7 @@ export const Calculation = ({
 }
 
 // Parameterize YES/NO labels
-const colors = { YES: 'text-green-500/50', NO: 'text-red-500/60' }
+const colors = { NO: 'text-red-500/60', YES: 'text-green-500/50' }
 const Label = ({ label }: { label: Label }) => (
   <div className={`text-sm ${colors[label]}`}>{label}</div>
 )

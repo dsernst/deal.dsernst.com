@@ -1,5 +1,6 @@
-import { expect, test, describe } from 'bun:test'
-import { calcBet, round, type Label } from './calcBet'
+import { describe, expect, test } from 'bun:test'
+
+import { calcBet, type Label, round } from './calcBet'
 
 describe('round()', () => {
   test('rounds to specified decimal places', () => {
@@ -30,27 +31,27 @@ describe('calcBet()', () => {
   type EV = number
   type Expected = {
     left: [Label, number, EV?]
-    right: [Label, number, EV?]
     midpoint?: number
-    opposite?: number
     normalized?: number
+    opposite?: number
+    right: [Label, number, EV?]
   }
   const validInputTestCases: [Odds, Expected][] = [
     [
       [60, 40], // odds1 > odds2
       {
         left: ['YES', 1, 0.2],
-        right: ['NO', 1, 0.2],
         midpoint: 50,
-        opposite: 50,
         normalized: 1,
+        opposite: 50,
+        right: ['NO', 1, 0.2],
       },
     ],
-    [[40, 60], { left: ['NO', 1], right: ['YES', 1], midpoint: 50 }],
-    [[50, 50], { left: ['NO', 1], right: ['YES', 1], midpoint: 50 }],
-    [[75, 25], { left: ['YES', 1], right: ['NO', 1], midpoint: 50 }],
-    [[99, 1], { left: ['YES', 1], right: ['NO', 1], midpoint: 50 }],
-    [[70, 20], { left: ['YES', 1, 0.556], right: ['NO', 1.22], midpoint: 45 }],
+    [[40, 60], { left: ['NO', 1], midpoint: 50, right: ['YES', 1] }],
+    [[50, 50], { left: ['NO', 1], midpoint: 50, right: ['YES', 1] }],
+    [[75, 25], { left: ['YES', 1], midpoint: 50, right: ['NO', 1] }],
+    [[99, 1], { left: ['YES', 1], midpoint: 50, right: ['NO', 1] }],
+    [[70, 20], { left: ['YES', 1, 0.556], midpoint: 45, right: ['NO', 1.22] }],
     [[20, 70], { left: ['NO', 1.22], right: ['YES', 1] }],
     [[48, 52], { left: ['NO', 1], right: ['YES', 1] }],
     [[2, 40], { left: ['NO', 3.76], right: ['YES', 1] }],

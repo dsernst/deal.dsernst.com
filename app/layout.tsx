@@ -1,8 +1,9 @@
 import type { Metadata } from 'next'
-import './globals.css'
-import { title, description } from './constants'
 
-export const metadata: Metadata = { title, description }
+import './globals.css'
+import { description, title } from './constants'
+
+export const metadata: Metadata = { description, title }
 
 export default function RootLayout({
   children,
@@ -10,7 +11,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html className="dark" lang="en">
       <body className="antialiased">{children}</body>
     </html>
   )

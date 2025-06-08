@@ -1,22 +1,22 @@
-export type Label = 'YES' | 'NO'
+export type Label = 'NO' | 'YES'
 
 export function calcBet(
   odds1: number,
   odds2: number
-): {
-  leftLabel: Label
-  rightLabel: Label
-  leftAmount: number
-  rightAmount: number
-  midpoint: number
-  opposite: number
+): null | {
   gcf: number
-  normalized: number
-  reducedIsntNormalized: boolean
   isReducible: boolean
+  leftAmount: number
   leftEv: number
+  leftLabel: Label
+  midpoint: number
+  normalized: number
+  opposite: number
+  reducedIsntNormalized: boolean
+  rightAmount: number
   rightEv: number
-} | null {
+  rightLabel: Label
+} {
   if (!odds1 || !odds2) return null
   if (odds1 === 0 || odds2 === 0) return null
   if (Number.isNaN(odds1) || Number.isNaN(odds2)) return null
@@ -41,19 +41,28 @@ export function calcBet(
   const rightEv = Math.abs(rightP * normalized - (1 - rightP))
 
   return {
-    leftLabel,
-    rightLabel,
-    leftAmount,
-    rightAmount,
-    midpoint,
-    opposite,
     gcf,
-    normalized,
-    reducedIsntNormalized,
     isReducible,
+    leftAmount,
     leftEv,
+    leftLabel,
+    midpoint,
+    normalized,
+    opposite,
+    reducedIsntNormalized,
+    rightAmount,
     rightEv,
+    rightLabel,
   }
+}
+
+/** Round a number to a given number of decimal places.
+
+round(3.14159265, 2)  → 3.14  
+round(3.14159265, 4)  → 3.1416 */
+export function round(value: number, digits: number): number {
+  const factor = Math.pow(10, digits)
+  return Math.round(value * factor) / factor
 }
 
 /** Compute Greatest Common Factor (GCF), also called Greatest Common Divisor (GCD), using the Euclidean algorithm.
@@ -66,13 +75,4 @@ function gcd(a: number, b: number): number {
     a = temp
   }
   return Math.abs(a)
-}
-
-/** Round a number to a given number of decimal places.
-
-round(3.14159265, 2)  → 3.14  
-round(3.14159265, 4)  → 3.1416 */
-export function round(value: number, digits: number): number {
-  const factor = Math.pow(10, digits)
-  return Math.round(value * factor) / factor
 }
