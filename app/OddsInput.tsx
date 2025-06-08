@@ -1,20 +1,14 @@
 'use client'
 
-import { useState } from 'react'
-import { useUrlSync } from './useUrlSync'
+type Odds = [string, string]
 
 export default function OddsInput({
-  odds1,
-  odds2,
+  odds,
+  setHashValues,
 }: {
-  odds1: string
-  odds2: string
+  odds: Odds
+  setHashValues: (nextValues: Odds) => void
 }) {
-  const [values, setValues] = useState([odds1, odds2])
-
-  // Sync values with URL
-  useUrlSync([values[0], values[1]])
-
   return (
     <div className="flex gap-4">
       {['30', '75'].map((placeholder, index) => (
@@ -29,14 +23,12 @@ export default function OddsInput({
             <input
               type="text"
               {...{ placeholder }}
-              autoFocus={index === 0 && !values[0]}
-              value={values[index]}
-              onChange={({ target: { value } }) => {
-                setValues((prev) => {
-                  const newValues = [...prev]
-                  newValues[index] = value
-                  return newValues
-                })
+              autoFocus={index === 0 && !odds[0]}
+              value={odds[index]}
+              onChange={(e) => {
+                const newValues: Odds = [odds[0], odds[1]]
+                newValues[index] = e.target.value
+                setHashValues(newValues)
               }}
               className="px-3 py-2 h-20 w-30 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />

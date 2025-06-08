@@ -1,13 +1,12 @@
 'use client'
 
-import { usePathname } from 'next/navigation'
 import { Calculation } from './Calculation'
 import OddsInput from './OddsInput'
 import { title, description } from './constants'
+import { useUrlHashState } from './useUrlHashState'
 
 export function Content() {
-  // Ensure we always have two values, even if URL is partial
-  const [odds1 = '', odds2 = ''] = usePathname().split('/').slice(1)
+  const [[odds1, odds2], setHashValues] = useUrlHashState()
 
   return (
     <div className="min-h-screen p-8 flex flex-col items-center justify-center">
@@ -15,7 +14,7 @@ export function Content() {
       <p className="text-lg text-gray-400 mb-8">{description}</p>
 
       {/* Odds inputs */}
-      <OddsInput {...{ odds1, odds2 }} />
+      <OddsInput {...{ odds: [odds1, odds2], setHashValues }} />
 
       <Calculation {...{ odds1, odds2 }} />
     </div>
