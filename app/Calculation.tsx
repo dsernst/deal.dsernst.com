@@ -15,15 +15,12 @@ export const Calculation = ({
       </div>
     )
   const {
-    gcf,
-    isReducible,
     leftAmount,
     leftEv,
     leftLabel,
     midpoint,
     normalized,
     opposite,
-    reducedIsntNormalized,
     rightAmount,
     rightLabel,
   } = bet
@@ -56,24 +53,17 @@ export const Calculation = ({
         <p className="mt-6 text-xs text-gray-500">
           <b>Split:</b> {midpoint} : {opposite}
         </p>
-        {isReducible && (
-          <p className={reducedIsntNormalized ? 'text-xs text-gray-500' : ''}>
-            <b>Reduced:</b> {midpoint / gcf} : {opposite / gcf}
-          </p>
-        )}
 
-        {reducedIsntNormalized && (
-          <p>
-            <b>Normalized:</b>{' '}
-            <span>
-              {midpoint < 50 && <>1 : </>}
-              <span className="cursor-help" title={`${round(normalized, 6)}`}>
-                {round(normalized, 2)}
-              </span>
-              {midpoint >= 50 && <> : 1</>}
+        <p>
+          <b>Normalized:</b>{' '}
+          <span>
+            {midpoint < 50 && <>1 : </>}
+            <span className="cursor-help" title={`${round(normalized, 6)}`}>
+              {round(normalized, 2)}
             </span>
-          </p>
-        )}
+            {midpoint >= 50 && <> : 1</>}
+          </span>
+        </p>
 
         <p className="text-xs mt-6 text-gray-500">
           <i>Expected Value:</i>+{round(leftEv * 100, 1)}%
