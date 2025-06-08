@@ -1,5 +1,4 @@
 import { useRouter, usePathname } from 'next/navigation'
-// import { useRef, useEffect, useState } from 'react'
 import { useEffect, useState } from 'react'
 
 export function useUrlHashState(): [
@@ -8,7 +7,6 @@ export function useUrlHashState(): [
 ] {
   const router = useRouter()
   const path = usePathname()
-  // const timeoutRef = useRef<NodeJS.Timeout | undefined>(undefined)
   const [values, setValues] = useState<[string, string]>(['', ''])
 
   // Read the hash on client-side mount and on hash change
@@ -31,13 +29,9 @@ export function useUrlHashState(): [
     const [currentV1, currentV2] = currentHash.split('-')
 
     if (currentV1 !== nextV1 || currentV2 !== nextV2) {
-      // if (timeoutRef.current) clearTimeout(timeoutRef.current)
-
-      // timeoutRef.current = setTimeout(() => {
       const newHash = `#${nextV1}-${nextV2}`
       router.replace(`${path}${newHash}`)
       setValues(nextValues)
-      // }, 1000)
     }
   }
 
