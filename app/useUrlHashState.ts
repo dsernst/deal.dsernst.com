@@ -23,13 +23,14 @@ export function useUrlHashState(): [Odds, (next: Odds) => void] {
   }, [])
 
   const setHashValues = (nextValues: Odds) => {
+    const currentUrl = `${path}${window.location.hash}`
     const [nextV1, nextV2] = nextValues
-    const currentHash = window.location.hash.replace('#', '')
-    const [currentV1, currentV2] = currentHash.split('-')
 
-    if (currentV1 !== nextV1 || currentV2 !== nextV2) {
-      const newHash = `#${nextV1}-${nextV2}`
-      router.replace(`${path}${newHash}`)
+    const newHash = `#${nextV1}-${nextV2}`
+    const newUrl = `${path}${newHash}`
+
+    if (newUrl !== currentUrl) {
+      router.replace(newUrl)
       setValues(nextValues)
     }
   }
