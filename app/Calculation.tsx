@@ -24,6 +24,7 @@ export const Calculation = ({
     gcf,
     normalized,
     reducedIsntNormalized,
+    isReducible,
     leftEv,
   } = bet
 
@@ -55,9 +56,11 @@ export const Calculation = ({
         <p className="mt-6 text-xs text-gray-500">
           <b>Split:</b> {midpoint} : {opposite}
         </p>
-        <p className={reducedIsntNormalized ? 'text-xs text-gray-500' : ''}>
-          <b>Reduced:</b> {midpoint / gcf} : {opposite / gcf}
-        </p>
+        {isReducible && (
+          <p className={reducedIsntNormalized ? 'text-xs text-gray-500' : ''}>
+            <b>Reduced:</b> {midpoint / gcf} : {opposite / gcf}
+          </p>
+        )}
 
         {reducedIsntNormalized && (
           <p>

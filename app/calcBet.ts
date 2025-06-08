@@ -13,6 +13,7 @@ export function calcBet(
   gcf: number
   normalized: number
   reducedIsntNormalized: boolean
+  isReducible: boolean
   leftEv: number
   rightEv: number
 } | null {
@@ -23,6 +24,7 @@ export function calcBet(
   const midpoint = (odds1 + odds2) / 2
   const opposite = 100 - midpoint
   const gcf = gcd(midpoint, opposite)
+  const isReducible = gcf !== 1
   const reducedIsntNormalized = midpoint / gcf !== 1
   const normalized = midpoint < 50 ? opposite / midpoint : midpoint / opposite
 
@@ -48,6 +50,7 @@ export function calcBet(
     gcf,
     normalized,
     reducedIsntNormalized,
+    isReducible,
     leftEv,
     rightEv,
   }
