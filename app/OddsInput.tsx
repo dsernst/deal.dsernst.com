@@ -1,6 +1,6 @@
 'use client'
 
-type Odds = [string, string]
+export type Odds = [string, string]
 
 export default function OddsInput({
   odds,

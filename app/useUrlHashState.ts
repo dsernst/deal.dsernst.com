@@ -1,13 +1,12 @@
 import { usePathname, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
-export function useUrlHashState(): [
-  [string, string],
-  (next: [string, string]) => void
-] {
+import { type Odds } from './OddsInput'
+
+export function useUrlHashState(): [Odds, (next: Odds) => void] {
   const router = useRouter()
   const path = usePathname()
-  const [values, setValues] = useState<[string, string]>(['', ''])
+  const [values, setValues] = useState<Odds>(['', ''])
 
   // Read the hash on client-side mount and on hash change
   useEffect(() => {
@@ -23,7 +22,7 @@ export function useUrlHashState(): [
     return () => window.removeEventListener('hashchange', readHash)
   }, [])
 
-  const setHashValues = (nextValues: [string, string]) => {
+  const setHashValues = (nextValues: Odds) => {
     const [nextV1, nextV2] = nextValues
     const currentHash = window.location.hash.replace('#', '')
     const [currentV1, currentV2] = currentHash.split('-')
