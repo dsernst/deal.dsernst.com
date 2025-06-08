@@ -10,7 +10,7 @@ export const Calculation = ({
   const bet = calcBet(+odds1, +odds2)
   if (!bet)
     return (
-      <div className="opacity-30 italic h-78 pt-8">
+      <div className="opacity-30 italic h-74 pt-8">
         Enter odds for calculation
       </div>
     )
