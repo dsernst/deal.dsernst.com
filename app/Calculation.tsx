@@ -1,3 +1,5 @@
+import { useState } from 'react'
+
 import { calcBet, type Label, round } from './calcBet'
 
 export const Calculation = ({
@@ -7,6 +9,7 @@ export const Calculation = ({
   odds1: string
   odds2: string
 }) => {
+  const [usingSimple, setUsingSimple] = useState(true)
   const bet = calcBet(+odds1, +odds2)
   if (!bet)
     return (
@@ -14,14 +17,19 @@ export const Calculation = ({
         Enter odds for calculation
       </div>
     )
+
   const {
+    kellyMidpoint,
     leftAmount,
     leftEv,
+    leftKellyAmount,
     leftLabel,
     midpoint,
     normalized,
     opposite,
+    // payoutMultiple,
     rightAmount,
+    rightKellyAmount,
     rightLabel,
   } = bet
 
@@ -29,13 +37,30 @@ export const Calculation = ({
     <div>
       <div className="flex justify-between gap-2 text-center w-42 mt-2">
         <div className="flex flex-col items-center">
-          <div>${round(leftAmount, 2)}</div>
+          <div>${round(usingSimple ? leftAmount : leftKellyAmount, 2)}</div>
           <Label label={leftLabel} />
         </div>
         <div className="flex flex-col items-center">
-          <div>${round(rightAmount, 2)}</div>
+          <div>${round(usingSimple ? rightAmount : rightKellyAmount, 2)}</div>
           <Label label={rightLabel} />
         </div>
+      </div>
+
+      {/* Simple / Kelly toggle */}
+      <div className="flex justify-between gap-2 text-center w-42 mt-6">
+        {['Simple', 'Kelly'].map((label) => (
+          <div
+            className={`cursor-pointer border rounded-md px-4 py-0.5 ${
+              usingSimple !== (label === 'Kelly')
+                ? 'bg-gray-100/20 border-gray-400'
+                : 'border-gray-500'
+            }`}
+            key={label}
+            onClick={() => setUsingSimple(label === 'Simple')}
+          >
+            {label}
+          </div>
+        ))}
       </div>
 
       <h2 className="text-sm font-bold mb-4 text-gray-500 mt-12">
@@ -44,7 +69,8 @@ export const Calculation = ({
 
       <div className="*:flex *:justify-between *:gap-4">
         <p>
-          <b>Midpoint:</b> {midpoint}%
+          <b>Midpoint:</b>{' '}
+          {usingSimple ? midpoint : round(kellyMidpoint * 100, 1)}%
         </p>
         <p className="text-xs text-gray-500">
           <b>Opposite:</b> {opposite}%
@@ -66,7 +92,7 @@ export const Calculation = ({
         </p>
 
         <p className="text-xs mt-6 text-gray-500">
-          <i>Expected Value:</i>+{round(leftEv * 100, 1)}%
+          <i>Expected Value:</i>+{round(leftEv * 100, 1)}%s
         </p>
         <p className="text-xs text-gray-700">for both sides</p>
       </div>

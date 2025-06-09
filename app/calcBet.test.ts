@@ -2,8 +2,8 @@ import { describe, expect, it } from 'bun:test'
 
 import {
   calcBet,
+  getKellyMidpoint,
   invLogit,
-  kellyMidpoint,
   type Label,
   logit,
   round,
@@ -105,14 +105,14 @@ describe('logit / invLogit', () => {
 describe('kellyMidpoint', () => {
   it('should return arithmetic midpoint when beliefs are equal', () => {
     const p = 0.6
-    const kMid = kellyMidpoint(p, p)
+    const kMid = getKellyMidpoint(p, p)
     expect(kMid).toBeCloseTo(p, 10)
   })
 
   it('should be between the two inputs', () => {
     const p1 = 0.4
     const p2 = 0.7
-    const kMid = kellyMidpoint(p1, p2)
+    const kMid = getKellyMidpoint(p1, p2)
     expect(kMid).toBeGreaterThanOrEqual(Math.min(p1, p2))
     expect(kMid).toBeLessThanOrEqual(Math.max(p1, p2))
   })
@@ -121,7 +121,7 @@ describe('kellyMidpoint', () => {
     const p1 = 0.58
     const p2 = 0.64
     const arithmeticMid = (p1 + p2) / 2
-    const kMid = kellyMidpoint(p1, p2)
+    const kMid = getKellyMidpoint(p1, p2)
     // Should not exactly equal arithmetic midpoint
     expect(kMid).not.toBeCloseTo(arithmeticMid, 10)
   })
