@@ -47,6 +47,20 @@ export function calcBet(
   }
 }
 
+/** Converts log-odds back to probability */
+export const invLogit = (l: number) => 1 / (1 + Math.exp(-l))
+
+/** Computes Kelly midpoint: a fair midpoint where both sides have equal subjective EV */
+export function kellyMidpoint(p1: number, p2: number) {
+  const l1 = logit(p1)
+  const l2 = logit(p2)
+  const midLogit = (l1 + l2) / 2
+  return invLogit(midLogit)
+}
+
+/** Converts probability to log-odds (logit space) */
+export const logit = (p: number) => Math.log(p / (1 - p))
+
 /** Round a number to a given number of decimal places.
 
 round(3.14159265, 2)  → 3.14  

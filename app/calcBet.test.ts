@@ -1,25 +1,32 @@
-import { describe, expect, test } from 'bun:test'
+import { describe, expect, it } from 'bun:test'
 
-import { calcBet, type Label, round } from './calcBet'
+import {
+  calcBet,
+  invLogit,
+  kellyMidpoint,
+  type Label,
+  logit,
+  round,
+} from './calcBet'
 
 describe('round()', () => {
-  test('rounds to specified decimal places', () => {
+  it('rounds to specified decimal places', () => {
     expect(round(3.14159265, 2)).toBe(3.14)
     expect(round(3.14159265, 4)).toBe(3.1416)
     expect(round(3.14159265, 0)).toBe(3)
   })
 
-  test('handles negative numbers', () => {
+  it('handles negative numbers', () => {
     expect(round(-3.14159265, 2)).toBe(-3.14)
   })
 
-  test('handles zero', () => {
+  it('handles zero', () => {
     expect(round(0, 2)).toBe(0)
   })
 })
 
 describe('calcBet()', () => {
-  test('null for invalid inputs', () => {
+  it('null for invalid inputs', () => {
     expect(calcBet(0, 50)).toBeNull()
     expect(calcBet(50, 0)).toBeNull()
     expect(calcBet(NaN, 50)).toBeNull()
@@ -63,7 +70,7 @@ describe('calcBet()', () => {
   ]
 
   validInputTestCases.forEach(([[odds1, odds2], expected]) => {
-    test(`${String(odds1).padStart(2, ' ')} vs ${odds2}`, () => {
+    it(`${String(odds1).padStart(2, ' ')} vs ${odds2}`, () => {
       const result = calcBet(odds1, odds2)
       expect(result).not.toBeNull()
       if (!result) throw new Error('Result should not be null')
@@ -81,5 +88,41 @@ describe('calcBet()', () => {
       if (expected.right[2])
         expect(round(result.rightEv, 3)).toBe(expected.right[2])
     })
+  })
+})
+
+describe('logit / invLogit', () => {
+  it('should round-trip correctly', () => {
+    const probs = [0.01, 0.1, 0.25, 0.5, 0.75, 0.9, 0.99]
+    probs.forEach((p) => {
+      const l = logit(p)
+      const p2 = invLogit(l)
+      expect(p2).toBeCloseTo(p, 10) // very high precision
+    })
+  })
+})
+
+describe('kellyMidpoint', () => {
+  it('should return arithmetic midpoint when beliefs are equal', () => {
+    const p = 0.6
+    const kMid = kellyMidpoint(p, p)
+    expect(kMid).toBeCloseTo(p, 10)
+  })
+
+  it('should be between the two inputs', () => {
+    const p1 = 0.4
+    const p2 = 0.7
+    const kMid = kellyMidpoint(p1, p2)
+    expect(kMid).toBeGreaterThanOrEqual(Math.min(p1, p2))
+    expect(kMid).toBeLessThanOrEqual(Math.max(p1, p2))
+  })
+
+  it('should be slightly shifted compared to arithmetic midpoint', () => {
+    const p1 = 0.58
+    const p2 = 0.64
+    const arithmeticMid = (p1 + p2) / 2
+    const kMid = kellyMidpoint(p1, p2)
+    // Should not exactly equal arithmetic midpoint
+    expect(kMid).not.toBeCloseTo(arithmeticMid, 10)
   })
 })
