@@ -61,10 +61,9 @@ export function kellyMidpoint(p1: number, p2: number) {
 /** Converts probability to log-odds (logit space) */
 export const logit = (p: number) => Math.log(p / (1 - p))
 
-/** Round a number to a given number of decimal places.
-
-round(3.14159265, 2)  → 3.14  
-round(3.14159265, 4)  → 3.1416 */
+/** Round a number to a given number of decimal places.  
+round(Math.PI, 2)  → 3.14  
+round(Math.PI, 4)  → 3.1416 */
 export function round(value: number, digits: number): number {
   const factor = Math.pow(10, digits)
   return Math.round(value * factor) / factor
