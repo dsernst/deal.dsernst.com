@@ -7,13 +7,11 @@ export function calcBet(
   odds2: number
 ): null | {
   arithmeticMidpoint: number
-  kellyMidpoint: number
   leftAmount: number
   leftArithmeticCost: number
   leftDiscountFromArithmeticMid: Discount
   leftDiscountFromRelativeMid: Discount
   leftEv: number
-  leftKellyAmount: number
   leftLabel: Label
   leftRelativeCost: number
   normalized: number
@@ -24,7 +22,6 @@ export function calcBet(
   rightDiscountFromArithmeticMid: Discount
   rightDiscountFromRelativeMid: Discount
   rightEv: number
-  rightKellyAmount: number
   rightLabel: Label
   rightRelativeCost: number
 } {
@@ -55,11 +52,8 @@ export function calcBet(
 
   // Calculate Expected Value for each side
   // EV = (Probability of winning * Amount won) - (Probability of losing * Amount lost)
-  // const leftEv = Math.abs(leftP * normalized - (1 - leftP))
-  // const rightEv = Math.abs(rightP * normalized - (1 - rightP))
-
-  // Kelly midpoint
-  const kellyMidpoint = getKellyMidpoint(leftP, rightP)
+  const leftEv = Math.abs(leftP * normalized - (1 - leftP))
+  const rightEv = Math.abs(rightP * normalized - (1 - rightP))
 
   // Relative midpoint
   const relativeMidpoint = getRelativeMidpoint(leftP, rightP)
@@ -80,26 +74,13 @@ export function calcBet(
   const leftDiscountFromRelativeMid = calcDiscount(leftP, leftRelativeCost)
   const rightDiscountFromRelativeMid = calcDiscount(rightP, rightRelativeCost)
 
-  // Payout multiple (for the underdog side)
-  const b = getPayoutMultiple(kellyMidpoint)
-
-  // Determine amounts bet
-  const leftKellyAmount = kellyMidpoint < 0.5 && leftLabel === 'NO' ? b : 1
-  const rightKellyAmount = leftKellyAmount === 1 ? b : 1
-
-  // Correct EV (NO ABS!)
-  const leftEv = leftP * leftAmount - (1 - leftP) * 1
-  const rightEv = rightP * rightAmount - (1 - rightP) * 1
-
   return {
     arithmeticMidpoint,
-    kellyMidpoint,
     leftAmount,
     leftArithmeticCost,
     leftDiscountFromArithmeticMid,
     leftDiscountFromRelativeMid,
     leftEv,
-    leftKellyAmount,
     leftLabel,
     leftRelativeCost,
     normalized,
@@ -110,7 +91,6 @@ export function calcBet(
     rightDiscountFromArithmeticMid,
     rightDiscountFromRelativeMid,
     rightEv,
-    rightKellyAmount,
     rightLabel,
     rightRelativeCost,
   }
@@ -129,24 +109,6 @@ function calcDiscount(value: number, cost: number) {
 
 /** Given two probabilities (between 0 and 1), returns their "relative" midpoint, that would equalize their EV */
 export const getRelativeMidpoint = (p1: number, p2: number) => p1 / (p1 + p2)
-
-/** Converts log-odds back to probability */
-export const invLogit = (l: number) => 1 / (1 + Math.exp(-l))
-
-/** Computes Kelly midpoint: a fair midpoint where both sides have equal subjective EV */
-export function getKellyMidpoint(p1: number, p2: number) {
-  const l1 = logit(p1)
-  const l2 = logit(p2)
-  const midLogit = (l1 + l2) / 2
-  return invLogit(midLogit)
-}
-
-/** Converts probability to log-odds (logit space) */
-export const logit = (p: number) => Math.log(p / (1 - p))
-
-export function getPayoutMultiple(midpointP: number) {
-  return (1 - midpointP) / midpointP
-}
 
 /** Round a number to a given number of decimal places.  
 round(Math.PI, 2)  → 3.14  

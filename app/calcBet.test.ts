@@ -1,13 +1,6 @@
 import { describe, expect, it } from 'bun:test'
 
-import {
-  calcBet,
-  getKellyMidpoint,
-  invLogit,
-  type Label,
-  logit,
-  round,
-} from './calcBet'
+import { calcBet, type Label, round } from './calcBet'
 
 describe('round()', () => {
   it('rounds to specified decimal places', () => {
@@ -89,42 +82,6 @@ describe('calcBet()', () => {
       // if (expected.right[2])
       //   expect(round(result.rightEv, 3)).toBe(expected.right[2])
     })
-  })
-})
-
-describe('logit / invLogit', () => {
-  it('should round-trip correctly', () => {
-    const probs = [0.01, 0.1, 0.25, 0.5, 0.75, 0.9, 0.99]
-    probs.forEach((p) => {
-      const l = logit(p)
-      const p2 = invLogit(l)
-      expect(p2).toBeCloseTo(p, 10) // very high precision
-    })
-  })
-})
-
-describe('kellyMidpoint', () => {
-  it('should return arithmetic midpoint when beliefs are equal', () => {
-    const p = 0.6
-    const kMid = getKellyMidpoint(p, p)
-    expect(kMid).toBeCloseTo(p, 10)
-  })
-
-  it('should be between the two inputs', () => {
-    const p1 = 0.4
-    const p2 = 0.7
-    const kMid = getKellyMidpoint(p1, p2)
-    expect(kMid).toBeGreaterThanOrEqual(Math.min(p1, p2))
-    expect(kMid).toBeLessThanOrEqual(Math.max(p1, p2))
-  })
-
-  it('should be slightly shifted compared to arithmetic midpoint', () => {
-    const p1 = 0.58
-    const p2 = 0.64
-    const arithmeticMid = (p1 + p2) / 2
-    const kMid = getKellyMidpoint(p1, p2)
-    // Should not exactly equal arithmetic midpoint
-    expect(kMid).not.toBeCloseTo(arithmeticMid, 10)
   })
 })
 

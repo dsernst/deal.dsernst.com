@@ -20,16 +20,13 @@ export const Calculation = ({
 
   const {
     arithmeticMidpoint,
-    kellyMidpoint,
     leftAmount,
     leftEv,
-    leftKellyAmount,
     leftLabel,
     normalized,
     opposite,
-    // payoutMultiple,
+    relativeMidpoint,
     rightAmount,
-    rightKellyAmount,
     rightLabel,
   } = bet
 
@@ -37,11 +34,11 @@ export const Calculation = ({
     <div>
       <div className="flex justify-between gap-2 text-center w-42 mt-2">
         <div className="flex flex-col items-center">
-          <div>${round(usingSimple ? leftAmount : leftKellyAmount, 2)}</div>
+          <div>${round(usingSimple ? leftAmount : 0, 2)}</div>
           <Label label={leftLabel} />
         </div>
         <div className="flex flex-col items-center">
-          <div>${round(usingSimple ? rightAmount : rightKellyAmount, 2)}</div>
+          <div>${round(usingSimple ? rightAmount : 0, 2)}</div>
           <Label label={rightLabel} />
         </div>
       </div>
@@ -70,7 +67,7 @@ export const Calculation = ({
       <div className="*:flex *:justify-between *:gap-4">
         <p>
           <b>Midpoint:</b>{' '}
-          {usingSimple ? arithmeticMidpoint : round(kellyMidpoint * 100, 1)}%
+          {usingSimple ? arithmeticMidpoint : round(relativeMidpoint * 100, 1)}%
         </p>
         <p className="text-xs text-gray-500">
           <b>Opposite:</b> {opposite}%
@@ -92,7 +89,7 @@ export const Calculation = ({
         </p>
 
         <p className="text-xs mt-6 text-gray-500">
-          <i>Expected Value:</i>+{round(leftEv * 100, 1)}%s
+          <i>Expected Value:</i>+{round(leftEv * 100, 1)}%
         </p>
         <p className="text-xs text-gray-700">for both sides</p>
       </div>
