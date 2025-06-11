@@ -45,15 +45,15 @@ export const Calculation = ({
 
       {/* Simple / Kelly toggle */}
       <div className="flex justify-between gap-2 text-center w-42 mt-6">
-        {['Simple', 'Kelly'].map((label) => (
+        {['Linear', 'Relative'].map((label) => (
           <div
             className={`cursor-pointer border rounded-md px-4 py-0.5 ${
-              usingSimple !== (label === 'Kelly')
+              usingSimple !== (label === 'Relative')
                 ? 'bg-gray-100/20 border-gray-400'
                 : 'border-gray-500'
             }`}
             key={label}
-            onClick={() => setUsingSimple(label === 'Simple')}
+            onClick={() => setUsingSimple(label === 'Linear')}
           >
             {label}
           </div>
