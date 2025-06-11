@@ -29,18 +29,17 @@ export function calcBet(
   if (odds1 === 0 || odds2 === 0) return null
   if (Number.isNaN(odds1) || Number.isNaN(odds2)) return null
 
+  // Determine sides
+  const leftLabel: Label = odds1 > odds2 ? 'YES' : 'NO'
+  const rightLabel: Label = leftLabel === 'NO' ? 'YES' : 'NO'
+
+  // Use arithmetic midpoint to determine amounts
   const arithmeticMidpoint = (odds1 + odds2) / 2
   const opposite = 100 - arithmeticMidpoint
   const normalized =
     arithmeticMidpoint < 50
       ? opposite / arithmeticMidpoint
       : arithmeticMidpoint / opposite
-
-  // Determine sides
-  const leftLabel: Label = odds1 > odds2 ? 'YES' : 'NO'
-  const rightLabel: Label = leftLabel === 'NO' ? 'YES' : 'NO'
-
-  // Determine sides (same as your app)
   const leftAmount =
     arithmeticMidpoint < 50 && leftLabel === 'NO' ? normalized : 1
   const rightAmount = leftAmount === 1 ? normalized : 1
@@ -55,7 +54,7 @@ export function calcBet(
   const leftEv = Math.abs(leftP * normalized - (1 - leftP))
   const rightEv = Math.abs(rightP * normalized - (1 - rightP))
 
-  // Relative midpoint
+  // Use relative midpoint to determine amounts
   const relativeMidpoint = getRelativeMidpoint(leftP, rightP)
 
   // //  Discounts
@@ -67,7 +66,6 @@ export function calcBet(
     rightP,
     rightArithmeticCost
   )
-
   // Relative
   const leftRelativeCost = calcCost(leftLabel, relativeMidpoint)
   const rightRelativeCost = calcCost(rightLabel, relativeMidpoint)
@@ -107,8 +105,12 @@ function calcDiscount(value: number, cost: number) {
   return { absolute, relative }
 }
 
-/** Given two probabilities (between 0 and 1), returns their "relative" midpoint, that would equalize their EV */
-export const getRelativeMidpoint = (p1: number, p2: number) => p1 / (p1 + p2)
+/** Given two probabilities between (0,1), find the midpoint that equalizes their relative EVs */
+export const getRelativeMidpoint = (p1: number, p2: number): number => {
+  const yes = Math.max(p1, p2)
+  const no = Math.min(p1, p2)
+  return yes / (yes + 1 - no)
+}
 
 /** Round a number to a given number of decimal places.  
 round(Math.PI, 2)  → 3.14  

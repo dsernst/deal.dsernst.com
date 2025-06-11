@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'bun:test'
 
-import { calcBet, type Label, round } from './calcBet'
+import { calcBet, getRelativeMidpoint, type Label, round } from './calcBet'
 
 describe('round()', () => {
   it('rounds to specified decimal places', () => {
@@ -85,7 +85,27 @@ describe('calcBet()', () => {
   })
 })
 
-describe('relativeMidpoints', () => {
+describe('getRelativeMidpoint()', () => {
+  it('should be symmetric', () => {
+    expect(getRelativeMidpoint(0.99, 0.5)).toEqual(
+      getRelativeMidpoint(0.5, 0.99)
+    )
+  })
+  it('should allow values < 0.5', () => {
+    const expecteds = [
+      [0.1, 0.3, 0.25],
+      [0.3, 0.1, 0.25],
+      [0.05, 0.4, 0.2962],
+      [0.4, 0.05, 0.2962],
+    ]
+
+    for (const [p1, p2, expected] of expecteds) {
+      expect(getRelativeMidpoint(p1, p2)).toBeCloseTo(expected)
+    }
+  })
+})
+
+describe.only('relativeMidpoints', () => {
   const examples = [
     {
       inputs: [99, 50],
@@ -95,6 +115,25 @@ describe('relativeMidpoints', () => {
           discounts: {
             left: { absolute: 0.245, relative: 0.247 },
             right: { absolute: 0.245, relative: 0.49 },
+          },
+        },
+        relative: {
+          _midpoint: 0.6644,
+          discounts: {
+            left: { absolute: 0.326, relative: 0.329 },
+            right: { absolute: 0.164, relative: 0.3288 },
+          },
+        },
+      },
+    },
+    {
+      inputs: [50, 99],
+      outputs: {
+        arithmetic: {
+          _midpoint: 74.5,
+          discounts: {
+            left: { absolute: 0.245, relative: 0.49 },
+            right: { absolute: 0.245, relative: 0.247 },
           },
         },
         relative: {
@@ -131,8 +170,8 @@ describe('relativeMidpoints', () => {
     it(`${inputs[0]} vs ${inputs[1]}`, () => {
       const results = calcBet(inputs[0], inputs[1])
       if (!results) throw new Error('Results should not be null')
-      const r = results // alias
 
+      const r = results
       const mapping = {
         arithmetic: {
           _midpoint: r.arithmeticMidpoint,
@@ -152,8 +191,28 @@ describe('relativeMidpoints', () => {
 
       const expecteds = traverseTree(mapping)
       for (const [key, actual] of Object.entries(expecteds)) {
-        expect(getNestedValue(outputs, key), key).toBeCloseTo(actual, 3)
+        expect(actual, key).toBeCloseTo(getNestedValue(outputs, key), 3)
       }
+
+      // Arithmetic midpoint's absolute discounts should be equal
+      expect(mapping.arithmetic.discounts.left.absolute).toBeCloseTo(
+        mapping.arithmetic.discounts.right.absolute,
+        10
+      )
+      // Relative midpoint's relative discounts should be equal
+      expect(mapping.relative.discounts.left.relative).toBeCloseTo(
+        mapping.relative.discounts.right.relative,
+        10
+      )
+
+      // Relative midpoint should be not depend on the order of the inputs
+      const reversedResults = calcBet(inputs[1], inputs[0])
+      if (!reversedResults)
+        throw new Error('Reversed results should not be null')
+      expect(mapping.relative._midpoint).toBeCloseTo(
+        reversedResults.relativeMidpoint,
+        10
+      )
     })
   }
 })
@@ -161,7 +220,10 @@ describe('relativeMidpoints', () => {
 /** const data = { foo: { bar: { baz: 42 } } }
 getNestedValue(data, 'foo.bar.baz') // 42
 getNestedValue(data, 'foo.bar.qux') // undefined */
-export function getNestedValue(obj: Record<string, unknown>, path: string) {
+export function getNestedValue(
+  obj: Record<string, unknown>,
+  path: string
+): number {
   // @ts-expect-error - its a deeply nested tree
   return path.split('.').reduce((acc, key) => acc?.[key], obj)
 }
