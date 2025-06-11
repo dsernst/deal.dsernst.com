@@ -105,7 +105,7 @@ describe('getRelativeMidpoint()', () => {
   })
 })
 
-describe.only('relativeMidpoints', () => {
+describe('relativeMidpoints', () => {
   const examples = [
     {
       inputs: [99, 50],
@@ -139,8 +139,8 @@ describe.only('relativeMidpoints', () => {
         relative: {
           _midpoint: 0.6644,
           discounts: {
-            left: { absolute: 0.326, relative: 0.329 },
-            right: { absolute: 0.164, relative: 0.3288 },
+            left: { absolute: 0.164, relative: 0.3288 },
+            right: { absolute: 0.326, relative: 0.329 },
           },
         },
       },
