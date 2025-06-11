@@ -85,9 +85,9 @@ describe('calcBet()', () => {
   })
 })
 
-describe('relativeMidpoint & calcDiscount()', () => {
-  it('should match our expected calculations', () => {
-    const example = {
+describe('relativeMidpoints', () => {
+  const examples = [
+    {
       inputs: [99, 50],
       outputs: {
         arithmetic: {
@@ -105,34 +105,57 @@ describe('relativeMidpoint & calcDiscount()', () => {
           },
         },
       },
-    }
-
-    const results = calcBet(example.inputs[0], example.inputs[1])
-    if (!results) throw new Error('Results should not be null')
-    const r = results // alias
-
-    const mapping = {
-      arithmetic: {
-        _midpoint: r.arithmeticMidpoint,
-        discounts: {
-          left: r.leftDiscountFromArithmeticMid,
-          right: r.rightDiscountFromArithmeticMid,
+    },
+    {
+      inputs: [50, 50],
+      outputs: {
+        arithmetic: {
+          _midpoint: 50,
+          discounts: {
+            left: { absolute: 0, relative: 0 },
+            right: { absolute: 0, relative: 0 },
+          },
+        },
+        relative: {
+          _midpoint: 0.5,
+          discounts: {
+            left: { absolute: 0, relative: 0 },
+            right: { absolute: 0, relative: 0 },
+          },
         },
       },
-      relative: {
-        _midpoint: r.relativeMidpoint,
-        discounts: {
-          left: r.leftDiscountFromRelativeMid,
-          right: r.rightDiscountFromRelativeMid,
-        },
-      },
-    }
+    },
+  ]
 
-    const expecteds = traverseTree(mapping)
-    for (const [key, actual] of Object.entries(expecteds)) {
-      expect(getNestedValue(example.outputs, key), key).toBeCloseTo(actual, 3)
-    }
-  })
+  for (const { inputs, outputs } of examples) {
+    it(`${inputs[0]} vs ${inputs[1]}`, () => {
+      const results = calcBet(inputs[0], inputs[1])
+      if (!results) throw new Error('Results should not be null')
+      const r = results // alias
+
+      const mapping = {
+        arithmetic: {
+          _midpoint: r.arithmeticMidpoint,
+          discounts: {
+            left: r.leftDiscountFromArithmeticMid,
+            right: r.rightDiscountFromArithmeticMid,
+          },
+        },
+        relative: {
+          _midpoint: r.relativeMidpoint,
+          discounts: {
+            left: r.leftDiscountFromRelativeMid,
+            right: r.rightDiscountFromRelativeMid,
+          },
+        },
+      }
+
+      const expecteds = traverseTree(mapping)
+      for (const [key, actual] of Object.entries(expecteds)) {
+        expect(getNestedValue(outputs, key), key).toBeCloseTo(actual, 3)
+      }
+    })
+  }
 })
 
 /** const data = { foo: { bar: { baz: 42 } } }
