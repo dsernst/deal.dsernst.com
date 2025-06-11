@@ -19,12 +19,12 @@ export const Calculation = ({
     )
 
   const {
+    arithmeticMidpoint,
     kellyMidpoint,
     leftAmount,
     leftEv,
     leftKellyAmount,
     leftLabel,
-    midpoint,
     normalized,
     opposite,
     // payoutMultiple,
@@ -70,24 +70,24 @@ export const Calculation = ({
       <div className="*:flex *:justify-between *:gap-4">
         <p>
           <b>Midpoint:</b>{' '}
-          {usingSimple ? midpoint : round(kellyMidpoint * 100, 1)}%
+          {usingSimple ? arithmeticMidpoint : round(kellyMidpoint * 100, 1)}%
         </p>
         <p className="text-xs text-gray-500">
           <b>Opposite:</b> {opposite}%
         </p>
 
         <p className="mt-6 text-xs text-gray-500">
-          <b>Split:</b> {midpoint} : {opposite}
+          <b>Split:</b> {arithmeticMidpoint} : {opposite}
         </p>
 
         <p>
           <b>Normalized:</b>{' '}
           <span>
-            {midpoint < 50 && <>1 : </>}
+            {arithmeticMidpoint < 50 && <>1 : </>}
             <span className="cursor-help" title={`${round(normalized, 6)}`}>
               {round(normalized, 2)}
             </span>
-            {midpoint >= 50 && <> : 1</>}
+            {arithmeticMidpoint >= 50 && <> : 1</>}
           </span>
         </p>
 

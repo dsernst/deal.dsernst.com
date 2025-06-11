@@ -1,18 +1,25 @@
 export type Label = 'NO' | 'YES'
 
+type Discount = { absolute: number; relative: number }
+
 export function calcBet(
   odds1: number,
   odds2: number
 ): null | {
+  arithmeticMidpoint: number
   kellyMidpoint: number
   leftAmount: number
+  leftDiscountFromArithmeticMid: Discount
+  leftDiscountFromRelativeMid: Discount
   leftEv: number
   leftKellyAmount: number
   leftLabel: Label
-  midpoint: number
   normalized: number
   opposite: number
+  relativeMidpoint: number
   rightAmount: number
+  rightDiscountFromArithmeticMid: Discount
+  rightDiscountFromRelativeMid: Discount
   rightEv: number
   rightKellyAmount: number
   rightLabel: Label
@@ -21,21 +28,26 @@ export function calcBet(
   if (odds1 === 0 || odds2 === 0) return null
   if (Number.isNaN(odds1) || Number.isNaN(odds2)) return null
 
-  const midpoint = (odds1 + odds2) / 2
-  const opposite = 100 - midpoint
-  const normalized = midpoint < 50 ? opposite / midpoint : midpoint / opposite
+  const arithmeticMidpoint = (odds1 + odds2) / 2
+  const opposite = 100 - arithmeticMidpoint
+  const normalized =
+    arithmeticMidpoint < 50
+      ? opposite / arithmeticMidpoint
+      : arithmeticMidpoint / opposite
 
   // Determine sides
   const leftLabel: Label = odds1 > odds2 ? 'YES' : 'NO'
   const rightLabel: Label = leftLabel === 'NO' ? 'YES' : 'NO'
 
   // Determine sides (same as your app)
-  const leftAmount = midpoint < 50 && leftLabel === 'NO' ? normalized : 1
+  const leftAmount =
+    arithmeticMidpoint < 50 && leftLabel === 'NO' ? normalized : 1
   const rightAmount = leftAmount === 1 ? normalized : 1
 
   // Probabilities
   const leftP = odds1 / 100
   const rightP = odds2 / 100
+  const midP = arithmeticMidpoint / 100
 
   // Calculate Expected Value for each side
   // EV = (Probability of winning * Amount won) - (Probability of losing * Amount lost)
@@ -44,6 +56,15 @@ export function calcBet(
 
   // Kelly midpoint
   const kellyMidpoint = getKellyMidpoint(leftP, rightP)
+
+  // Relative midpoint
+  const relativeMidpoint = getRelativeMidpoint(leftP, rightP)
+
+  // Discounts
+  const leftDiscountFromArithmeticMid = calcDiscount(leftP, midP)
+  const rightDiscountFromArithmeticMid = calcDiscount(rightP, midP)
+  const leftDiscountFromRelativeMid = calcDiscount(leftP, relativeMidpoint)
+  const rightDiscountFromRelativeMid = calcDiscount(rightP, relativeMidpoint)
 
   // Payout multiple (for the underdog side)
   const b = getPayoutMultiple(kellyMidpoint)
@@ -57,20 +78,35 @@ export function calcBet(
   const rightEv = rightP * rightAmount - (1 - rightP) * 1
 
   return {
+    arithmeticMidpoint,
     kellyMidpoint,
     leftAmount,
+    leftDiscountFromArithmeticMid,
+    leftDiscountFromRelativeMid,
     leftEv,
     leftKellyAmount,
     leftLabel,
-    midpoint,
     normalized,
     opposite,
+    relativeMidpoint,
     rightAmount,
+    rightDiscountFromArithmeticMid,
+    rightDiscountFromRelativeMid,
     rightEv,
     rightKellyAmount,
     rightLabel,
   }
 }
+
+function calcDiscount(value: number, cost: number) {
+  // console.log({ cost, value })
+  const absolute = value - cost
+  const relative = absolute / value
+  return { absolute, relative }
+}
+
+/** Given two probabilities (between 0 and 1), returns their "relative" midpoint, that would equalize their EV */
+export const getRelativeMidpoint = (p1: number, p2: number) => p1 / (p1 + p2)
 
 /** Converts log-odds back to probability */
 export const invLogit = (l: number) => 1 / (1 + Math.exp(-l))
