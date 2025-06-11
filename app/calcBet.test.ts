@@ -144,7 +144,7 @@ describe('relativeMidpoint & calcDiscount()', () => {
           _midpoint: 0.6644,
           discounts: {
             left: { absolute: 0.326, relative: 0.329 },
-            right: { absolute: 0.164, relative: 0.328 },
+            right: { absolute: 0.164, relative: 0.3288 },
           },
         },
       },
@@ -172,8 +172,8 @@ describe('relativeMidpoint & calcDiscount()', () => {
     }
 
     const expecteds = traverseTree(mapping)
-    for (const [key, value] of Object.entries(expecteds)) {
-      expect(getNestedValue(example.outputs, key), key).toBeCloseTo(value, 3)
+    for (const [key, actual] of Object.entries(expecteds)) {
+      expect(getNestedValue(example.outputs, key), key).toBeCloseTo(actual, 3)
     }
   })
 })

@@ -9,20 +9,24 @@ export function calcBet(
   arithmeticMidpoint: number
   kellyMidpoint: number
   leftAmount: number
+  leftArithmeticCost: number
   leftDiscountFromArithmeticMid: Discount
   leftDiscountFromRelativeMid: Discount
   leftEv: number
   leftKellyAmount: number
   leftLabel: Label
+  leftRelativeCost: number
   normalized: number
   opposite: number
   relativeMidpoint: number
   rightAmount: number
+  rightArithmeticCost: number
   rightDiscountFromArithmeticMid: Discount
   rightDiscountFromRelativeMid: Discount
   rightEv: number
   rightKellyAmount: number
   rightLabel: Label
+  rightRelativeCost: number
 } {
   if (!odds1 || !odds2) return null
   if (odds1 === 0 || odds2 === 0) return null
@@ -60,11 +64,21 @@ export function calcBet(
   // Relative midpoint
   const relativeMidpoint = getRelativeMidpoint(leftP, rightP)
 
-  // Discounts
-  const leftDiscountFromArithmeticMid = calcDiscount(leftP, midP)
-  const rightDiscountFromArithmeticMid = calcDiscount(rightP, midP)
-  const leftDiscountFromRelativeMid = calcDiscount(leftP, relativeMidpoint)
-  const rightDiscountFromRelativeMid = calcDiscount(rightP, relativeMidpoint)
+  // //  Discounts
+  // Arithmetic
+  const leftArithmeticCost = calcCost(leftLabel, midP)
+  const rightArithmeticCost = calcCost(rightLabel, midP)
+  const leftDiscountFromArithmeticMid = calcDiscount(leftP, leftArithmeticCost)
+  const rightDiscountFromArithmeticMid = calcDiscount(
+    rightP,
+    rightArithmeticCost
+  )
+
+  // Relative
+  const leftRelativeCost = calcCost(leftLabel, relativeMidpoint)
+  const rightRelativeCost = calcCost(rightLabel, relativeMidpoint)
+  const leftDiscountFromRelativeMid = calcDiscount(leftP, leftRelativeCost)
+  const rightDiscountFromRelativeMid = calcDiscount(rightP, rightRelativeCost)
 
   // Payout multiple (for the underdog side)
   const b = getPayoutMultiple(kellyMidpoint)
@@ -81,21 +95,29 @@ export function calcBet(
     arithmeticMidpoint,
     kellyMidpoint,
     leftAmount,
+    leftArithmeticCost,
     leftDiscountFromArithmeticMid,
     leftDiscountFromRelativeMid,
     leftEv,
     leftKellyAmount,
     leftLabel,
+    leftRelativeCost,
     normalized,
     opposite,
     relativeMidpoint,
     rightAmount,
+    rightArithmeticCost,
     rightDiscountFromArithmeticMid,
     rightDiscountFromRelativeMid,
     rightEv,
     rightKellyAmount,
     rightLabel,
+    rightRelativeCost,
   }
+}
+
+function calcCost(label: Label, midpoint: number) {
+  return label === 'YES' ? midpoint : 1 - midpoint
 }
 
 function calcDiscount(value: number, cost: number) {
