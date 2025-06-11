@@ -164,6 +164,25 @@ describe('relativeMidpoints', () => {
         },
       },
     },
+    {
+      inputs: [50, 70],
+      outputs: {
+        arithmetic: {
+          _midpoint: 60,
+          discounts: {
+            left: { absolute: 0.1, relative: 0.1999 },
+            right: { absolute: 0.1, relative: 0.1428 },
+          },
+        },
+        relative: {
+          _midpoint: 0.583,
+          discounts: {
+            left: { absolute: 0.0833, relative: 0.1666 },
+            right: { absolute: 0.1166, relative: 0.1666 },
+          },
+        },
+      },
+    },
   ]
 
   for (const { inputs, outputs } of examples) {
