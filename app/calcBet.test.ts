@@ -208,8 +208,8 @@ describe('relativeMidpoints', () => {
         },
       }
 
-      const expecteds = traverseTree(mapping)
-      for (const [key, actual] of Object.entries(expecteds)) {
+      const actuals = traverseTree(mapping)
+      for (const [key, actual] of Object.entries(actuals)) {
         expect(actual, key).toBeCloseTo(getNestedValue(outputs, key), 3)
       }
 
