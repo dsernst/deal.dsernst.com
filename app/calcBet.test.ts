@@ -228,7 +228,7 @@ describe('relativeMidpoints', () => {
       const reversedResults = calcBet(inputs[1], inputs[0])
       if (!reversedResults)
         throw new Error('Reversed results should not be null')
-      expect(resultsObj.relative._midpoint).toBeCloseTo(
+      expect(results.relativeMidpoint).toBeCloseTo(
         reversedResults.relativeMidpoint,
         10
       )
