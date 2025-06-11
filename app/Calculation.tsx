@@ -2,6 +2,13 @@ import { useState } from 'react'
 
 import { calcBet, type Label, round } from './calcBet'
 
+const midpointTypes = {
+  Linear:
+    'Simple average of both beliefs — gives equal expected value to each side.',
+  Relative:
+    'Balances the perceived % advantage for each person, based on how confident they are.',
+}
+
 export const Calculation = ({
   odds1,
   odds2,
@@ -9,7 +16,7 @@ export const Calculation = ({
   odds1: string
   odds2: string
 }) => {
-  const [usingSimple, setUsingSimple] = useState(true)
+  const [usingLinear, setUsingLinear] = useState(true)
   const bet = calcBet(+odds1, +odds2)
   if (!bet)
     return (
@@ -34,26 +41,26 @@ export const Calculation = ({
     <div>
       <div className="flex justify-between gap-2 text-center w-42 mt-2">
         <div className="flex flex-col items-center">
-          <div>${round(usingSimple ? leftAmount : 0, 2)}</div>
+          <div>${round(usingLinear ? leftAmount : 0, 2)}</div>
           <Label label={leftLabel} />
         </div>
         <div className="flex flex-col items-center">
-          <div>${round(usingSimple ? rightAmount : 0, 2)}</div>
+          <div>${round(usingLinear ? rightAmount : 0, 2)}</div>
           <Label label={rightLabel} />
         </div>
       </div>
 
       {/* Simple / Kelly toggle */}
       <div className="flex justify-between gap-2 text-center w-42 mt-6">
-        {['Linear', 'Relative'].map((label) => (
+        {Object.keys(midpointTypes).map((label) => (
           <div
             className={`cursor-pointer border rounded-md px-4 py-0.5 ${
-              usingSimple !== (label === 'Relative')
+              usingLinear !== (label === 'Relative')
                 ? 'bg-gray-100/20 border-gray-400'
                 : 'border-gray-500'
             }`}
             key={label}
-            onClick={() => setUsingSimple(label === 'Linear')}
+            onClick={() => setUsingLinear(label === 'Linear')}
           >
             {label}
           </div>
@@ -67,7 +74,7 @@ export const Calculation = ({
       <div className="*:flex *:justify-between *:gap-4">
         <p>
           <b>Midpoint:</b>{' '}
-          {usingSimple ? arithmeticMidpoint : round(relativeMidpoint * 100, 1)}%
+          {usingLinear ? arithmeticMidpoint : round(relativeMidpoint * 100, 1)}%
         </p>
         <p className="text-xs text-gray-500">
           <b>Opposite:</b> {opposite}%
