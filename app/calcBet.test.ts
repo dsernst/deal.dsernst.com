@@ -191,7 +191,7 @@ describe('relativeMidpoints', () => {
       if (!results) throw new Error('Results should not be null')
 
       const r = results
-      const mapping = {
+      const resultsObj = {
         arithmetic: {
           _midpoint: r.arithmeticMidpoint,
           discounts: {
@@ -208,19 +208,19 @@ describe('relativeMidpoints', () => {
         },
       }
 
-      const actuals = traverseTree(mapping)
+      const actuals = traverseTree(resultsObj)
       for (const [key, actual] of Object.entries(actuals)) {
         expect(actual, key).toBeCloseTo(getNestedValue(outputs, key), 3)
       }
 
       // Arithmetic midpoint's absolute discounts should be equal
-      expect(mapping.arithmetic.discounts.left.absolute).toBeCloseTo(
-        mapping.arithmetic.discounts.right.absolute,
+      expect(resultsObj.arithmetic.discounts.left.absolute).toBeCloseTo(
+        resultsObj.arithmetic.discounts.right.absolute,
         10
       )
       // Relative midpoint's relative discounts should be equal
-      expect(mapping.relative.discounts.left.relative).toBeCloseTo(
-        mapping.relative.discounts.right.relative,
+      expect(resultsObj.relative.discounts.left.relative).toBeCloseTo(
+        resultsObj.relative.discounts.right.relative,
         10
       )
 
@@ -228,7 +228,7 @@ describe('relativeMidpoints', () => {
       const reversedResults = calcBet(inputs[1], inputs[0])
       if (!reversedResults)
         throw new Error('Reversed results should not be null')
-      expect(mapping.relative._midpoint).toBeCloseTo(
+      expect(resultsObj.relative._midpoint).toBeCloseTo(
         reversedResults.relativeMidpoint,
         10
       )
