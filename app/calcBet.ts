@@ -19,13 +19,12 @@ export function calcBet(
   odds1: number,
   odds2: number
 ): null | {
+  labels: [Label, Label]
   leftAmount: number
-  leftLabel: Label
   newShape: NewShape
   normalized: number
   opposite: number
   rightAmount: number
-  rightLabel: Label
 } {
   if (!odds1 || !odds2) return null
   if (odds1 === 0 || odds2 === 0) return null
@@ -69,8 +68,8 @@ export function calcBet(
   const rightDiscountFromRelativeMid = calcDiscount(rightP, rightRelativeCost)
 
   return {
+    labels: [leftLabel, rightLabel],
     leftAmount,
-    leftLabel,
     newShape: {
       linear: {
         _midpoint: arithmeticMidpoint,
@@ -90,7 +89,6 @@ export function calcBet(
     normalized,
     opposite,
     rightAmount,
-    rightLabel,
   }
 }
 

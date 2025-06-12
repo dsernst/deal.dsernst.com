@@ -67,8 +67,7 @@ describe('calcBet()', () => {
       expect(result).not.toBeNull()
       if (!result) throw new Error('Result should not be null')
 
-      expect(result.leftLabel).toBe(expected.left[0])
-      expect(result.rightLabel).toBe(expected.right[0])
+      expect(result.labels).toEqual([expected.left[0], expected.right[0]])
       expect(round(result.leftAmount, 2)).toBe(expected.left[1])
       expect(round(result.rightAmount, 2)).toBe(expected.right[1])
       if (expected.midpoint)

@@ -25,14 +25,7 @@ export const Calculation = ({
       </div>
     )
 
-  const {
-    leftAmount,
-    leftLabel,
-    normalized,
-    opposite,
-    rightAmount,
-    rightLabel,
-  } = bet
+  const { labels, leftAmount, normalized, opposite, rightAmount } = bet
 
   const calculations = usingLinear ? bet.newShape.linear : bet.newShape.relative
 
@@ -41,11 +34,11 @@ export const Calculation = ({
       <div className="flex justify-between gap-2 text-center w-42 mt-2">
         <div className="flex flex-col items-center">
           <div>${round(usingLinear ? leftAmount : 0, 2)}</div>
-          <Label label={leftLabel} />
+          <Label label={labels[0]} />
         </div>
         <div className="flex flex-col items-center">
           <div>${round(usingLinear ? rightAmount : 0, 2)}</div>
-          <Label label={rightLabel} />
+          <Label label={labels[1]} />
         </div>
       </div>
 
