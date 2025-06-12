@@ -48,7 +48,7 @@ export const Calculation = ({
       <div className="*:flex *:justify-between *:gap-4">
         <p className="items-end">
           <span
-            className="flex flex-col cursor-pointer hover:border-gray-700 border border-transparent hover:bg-gray-800/50 rounded-md px-1.5 pt-1 pb-0.5 relative -ml-px -left-1.5"
+            className="flex flex-col cursor-pointer border border-transparent hover:bg-gray-800/50 hover:border-gray-700 active:bg-gray-800 active:border-gray-700 rounded-md px-1.5 pt-1 pb-0.5 relative -ml-px -left-1.5"
             onClick={() => setUsingLinear(!usingLinear)}
             title={midpointTypes[usingLinear ? 'Linear' : 'Relative']}
           >
