@@ -9,49 +9,44 @@ export const ExpectedValue = ({
 }) => {
   const d = calculations.discounts
 
+  const Row = ({
+    label,
+    symbol,
+    type,
+  }: {
+    label: 'absolute' | 'relative'
+    symbol: '%' | '¢'
+    type: 'linear' | 'relative'
+  }) => (
+    <div className={usingLinear === (type === 'linear') ? 'text-white/90' : ''}>
+      <Col {...{ symbol }} value={d.left[label]} />
+      <Mid>{label}</Mid>
+      <Col {...{ symbol }} value={d.right[label]} />
+    </div>
+  )
+
   return (
     <div className="text-xs mt-6 text-gray-500 flex flex-col !gap-1 w-full *:flex *:gap-1 *:justify-between *:items-center">
       <div className="self-center font-bold text-[10px]">Expected Value</div>
 
       {/* 2x2 table */}
       <>
-        {/* First row */}
-        <div className={shouldHighlight(usingLinear)}>
-          <Col value={d.left.absolute}>¢</Col>
-          <Mid>Absolute</Mid>
-          <Col value={d.right.absolute}>¢</Col>
-        </div>
-
-        {/* Second row */}
-        <div className={shouldHighlight(!usingLinear)}>
-          <Col value={d.left.relative}>%</Col>
-          <Mid>Relative</Mid>
-          <Col value={d.right.relative}>%</Col>
-        </div>
+        <Row label="absolute" symbol="¢" type="linear" />
+        <Row label="relative" symbol="%" type="relative" />
       </>
     </div>
   )
 }
 
-const shouldHighlight = (bool: boolean) => (bool ? 'text-white/90' : '')
-
 const Mid = ({ children }: { children: React.ReactNode }) => (
   <span className="text-gray-500 text-[10px]">{children}</span>
 )
 
-const Col = ({
-  children,
-  className,
-  value,
-}: {
-  children: React.ReactNode
-  className?: string
-  value: number
-}) => (
-  <span className={`w-12 last:text-right ${className}`}>
+const Col = ({ symbol, value }: { symbol: '%' | '¢'; value: number }) => (
+  <span className="w-12 last:text-right">
     <TinyPlus />
     {round(value * 100, 1)}
-    {children}
+    {symbol}
   </span>
 )
 
