@@ -20,13 +20,11 @@ export function calcBet(
   odds2: number
 ): null | {
   leftAmount: number
-  leftEv: number
   leftLabel: Label
   newShape: NewShape
   normalized: number
   opposite: number
   rightAmount: number
-  rightEv: number
   rightLabel: Label
 } {
   if (!odds1 || !odds2) return null
@@ -52,11 +50,6 @@ export function calcBet(
     arithmeticMidpoint < 0.5 && leftLabel === 'NO' ? normalized : 1
   const rightAmount = leftAmount === 1 ? normalized : 1
 
-  // Calculate Expected Value for each side
-  // EV = (Probability of winning * Amount won) - (Probability of losing * Amount lost)
-  const leftEv = Math.abs(leftP * normalized - (1 - leftP))
-  const rightEv = Math.abs(rightP * normalized - (1 - rightP))
-
   // Use relative midpoint to determine amounts
   const relativeMidpoint = getRelativeMidpoint(leftP, rightP)
 
@@ -77,7 +70,6 @@ export function calcBet(
 
   return {
     leftAmount,
-    leftEv,
     leftLabel,
     newShape: {
       linear: {
@@ -98,7 +90,6 @@ export function calcBet(
     normalized,
     opposite,
     rightAmount,
-    rightEv,
     rightLabel,
   }
 }

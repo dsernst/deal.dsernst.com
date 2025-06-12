@@ -27,7 +27,6 @@ export const Calculation = ({
 
   const {
     leftAmount,
-    leftEv,
     leftLabel,
     normalized,
     opposite,
@@ -91,7 +90,7 @@ export const Calculation = ({
         </p>
 
         <p className="text-xs mt-6 text-gray-500">
-          <i>Expected Value:</i>+{round(leftEv * 100, 1)}%
+          <i>Expected Value:</i>+FIX%
         </p>
         <p className="text-xs text-gray-700">for both sides</p>
       </div>
