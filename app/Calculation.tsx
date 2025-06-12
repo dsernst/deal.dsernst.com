@@ -66,7 +66,7 @@ export const Calculation = ({
             </span>
             <b>Midpoint:</b>
           </span>
-          <span className="relative bottom-1.5">
+          <span className="relative bottom-0.5">
             {usingLinear
               ? arithmeticMidpoint
               : round(relativeMidpoint * 100, 1)}
