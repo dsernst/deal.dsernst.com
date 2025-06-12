@@ -16,7 +16,7 @@ export const ExpectedValue = ({
       {/* 2x2 table */}
       <>
         {/* First row */}
-        <div className={usingLinear ? 'text-white/90' : ''}>
+        <div className={shouldHighlight(usingLinear)}>
           <Col value={d.left.absolute}>¢</Col>
           <Mid>Absolute</Mid>
           <Col className="text-right" value={d.right.absolute}>
@@ -25,7 +25,7 @@ export const ExpectedValue = ({
         </div>
 
         {/* Second row */}
-        <div className={usingLinear ? '' : 'text-white/90'}>
+        <div className={shouldHighlight(!usingLinear)}>
           <Col value={d.left.relative}>%</Col>
           <Mid>Relative</Mid>
           <Col className="text-right" value={d.right.relative}>
@@ -36,6 +36,8 @@ export const ExpectedValue = ({
     </div>
   )
 }
+
+const shouldHighlight = (bool: boolean) => (bool ? 'text-white/90' : '')
 
 const Mid = ({ children }: { children: React.ReactNode }) => (
   <span className="text-gray-500 text-[10px]">{children}</span>
