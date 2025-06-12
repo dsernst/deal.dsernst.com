@@ -1,5 +1,7 @@
 import { MidpointCalculations, round } from './calcBet'
 
+type Units = '%' | '¢'
+
 export const ExpectedValue = ({
   calculations,
   usingLinear,
@@ -15,12 +17,12 @@ export const ExpectedValue = ({
     type,
   }: {
     label: 'absolute' | 'relative'
-    symbol: '%' | '¢'
+    symbol: Units
     type: 'linear' | 'relative'
   }) => (
     <div className={usingLinear === (type === 'linear') ? 'text-white/90' : ''}>
       <Col {...{ symbol }} value={d.left[label]} />
-      <Mid>{label}</Mid>
+      <Mid>{toTitleCase(label)}</Mid>
       <Col {...{ symbol }} value={d.right[label]} />
     </div>
   )
@@ -42,7 +44,7 @@ const Mid = ({ children }: { children: React.ReactNode }) => (
   <span className="text-gray-500 text-[10px]">{children}</span>
 )
 
-const Col = ({ symbol, value }: { symbol: '%' | '¢'; value: number }) => (
+const Col = ({ symbol, value }: { symbol: Units; value: number }) => (
   <span className="w-12 last:text-right">
     <TinyPlus />
     {round(value * 100, 1)}
@@ -52,3 +54,5 @@ const Col = ({ symbol, value }: { symbol: '%' | '¢'; value: number }) => (
 
 // <TinyPlus />
 const TinyPlus = () => <span className="text-[10px] relative bottom-px">+</span>
+
+const toTitleCase = (str: string) => str.charAt(0).toUpperCase() + str.slice(1)
