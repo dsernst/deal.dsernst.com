@@ -18,7 +18,7 @@ export const ExpectedValue = ({
         {/* First row */}
         <div className={usingLinear ? 'text-white/90' : ''}>
           <Col value={d.left.absolute}>¢</Col>
-          <span className="text-gray-500 text-[10px]">Absolute</span>
+          <Mid>Absolute</Mid>
           <Col className="text-right" value={d.right.absolute}>
             ¢
           </Col>
@@ -27,7 +27,7 @@ export const ExpectedValue = ({
         {/* Second row */}
         <div className={usingLinear ? '' : 'text-white/90'}>
           <Col value={d.left.relative}>%</Col>
-          <span className="text-gray-500 text-[10px]">Relative</span>
+          <Mid>Relative</Mid>
           <Col className="text-right" value={d.right.relative}>
             %
           </Col>
@@ -36,6 +36,10 @@ export const ExpectedValue = ({
     </div>
   )
 }
+
+const Mid = ({ children }: { children: React.ReactNode }) => (
+  <span className="text-gray-500 text-[10px]">{children}</span>
+)
 
 const Col = ({
   children,
