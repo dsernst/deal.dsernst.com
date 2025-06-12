@@ -178,6 +178,44 @@ describe('relativeMidpoints', () => {
         },
       },
     },
+    {
+      inputs: [40, 60],
+      outputs: {
+        linear: {
+          _midpoint: 0.5,
+          discounts: {
+            left: { absolute: 0.1, relative: 0.1666 },
+            right: { absolute: 0.1, relative: 0.1666 },
+          },
+        },
+        relative: {
+          _midpoint: 0.5,
+          discounts: {
+            left: { absolute: 0.1, relative: 0.1666 },
+            right: { absolute: 0.1, relative: 0.1666 },
+          },
+        },
+      },
+    },
+    {
+      inputs: [60, 40],
+      outputs: {
+        linear: {
+          _midpoint: 0.5,
+          discounts: {
+            left: { absolute: 0.1, relative: 0.1666 },
+            right: { absolute: 0.1, relative: 0.1666 },
+          },
+        },
+        relative: {
+          _midpoint: 0.5,
+          discounts: {
+            left: { absolute: 0.1, relative: 0.1666 },
+            right: { absolute: 0.1, relative: 0.1666 },
+          },
+        },
+      },
+    },
   ]
 
   for (const { inputs, outputs } of examples) {

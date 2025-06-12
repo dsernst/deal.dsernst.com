@@ -50,8 +50,8 @@ export function calcBet(
 
   // Discounts
   const calcDiscounts = (midpoint: number) => ({
-    left: calcDiscount(leftP, calcCost(leftLabel, midpoint)),
-    right: calcDiscount(rightP, calcCost(rightLabel, midpoint)),
+    left: calcDiscount(leftP, midpoint, leftLabel),
+    right: calcDiscount(rightP, midpoint, rightLabel),
   })
 
   return {
@@ -69,11 +69,12 @@ export function calcBet(
   }
 }
 
-function calcCost(label: Label, midpoint: number) {
-  return label === 'YES' ? midpoint : 1 - midpoint
-}
+function calcDiscount(value: number, cost: number, label: Label) {
+  if (label === 'NO') {
+    value = 1 - value
+    cost = 1 - cost
+  }
 
-function calcDiscount(value: number, cost: number) {
   const absolute = value - cost
   const relative = absolute / value
   return { absolute, relative }
