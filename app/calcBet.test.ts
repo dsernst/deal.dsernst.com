@@ -185,10 +185,9 @@ describe('relativeMidpoints', () => {
       const results = calcBet(inputs[0], inputs[1])
       if (!results) throw new Error('Results should not be null')
 
-      const actuals = traverseTree(results)
-      // console.log(actuals)
-      for (const [key, actual] of Object.entries(actuals)) {
-        expect(actual, key).toBeCloseTo(getNestedValue(outputs, key), 3)
+      const expecteds = traverseTree(outputs)
+      for (const [key, expected] of Object.entries(expecteds)) {
+        expect(getNestedValue(results, key), key).toBeCloseTo(expected, 3)
       }
 
       // Linear midpoint's absolute discounts should be equal
