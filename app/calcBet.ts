@@ -20,18 +20,14 @@ export function calcBet(
   odds2: number
 ): null | {
   leftAmount: number
-  leftArithmeticCost: number
   leftEv: number
   leftLabel: Label
-  leftRelativeCost: number
   newShape: NewShape
   normalized: number
   opposite: number
   rightAmount: number
-  rightArithmeticCost: number
   rightEv: number
   rightLabel: Label
-  rightRelativeCost: number
 } {
   if (!odds1 || !odds2) return null
   if (odds1 === 0 || odds2 === 0) return null
@@ -81,10 +77,8 @@ export function calcBet(
 
   return {
     leftAmount,
-    leftArithmeticCost,
     leftEv,
     leftLabel,
-    leftRelativeCost,
     newShape: {
       linear: {
         _midpoint: arithmeticMidpoint,
@@ -104,10 +98,8 @@ export function calcBet(
     normalized,
     opposite,
     rightAmount,
-    rightArithmeticCost,
     rightEv,
     rightLabel,
-    rightRelativeCost,
   }
 }
 
