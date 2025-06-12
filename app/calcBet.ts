@@ -2,25 +2,33 @@ export type Label = 'NO' | 'YES'
 
 type Discount = { absolute: number; relative: number }
 
+type MidpointShape = {
+  _midpoint: number
+  discounts: {
+    left: Discount
+    right: Discount
+  }
+}
+
+type NewShape = {
+  linear: MidpointShape
+  relative: MidpointShape
+}
+
 export function calcBet(
   odds1: number,
   odds2: number
 ): null | {
-  arithmeticMidpoint: number
   leftAmount: number
   leftArithmeticCost: number
-  leftDiscountFromArithmeticMid: Discount
-  leftDiscountFromRelativeMid: Discount
   leftEv: number
   leftLabel: Label
   leftRelativeCost: number
+  newShape: NewShape
   normalized: number
   opposite: number
-  relativeMidpoint: number
   rightAmount: number
   rightArithmeticCost: number
-  rightDiscountFromArithmeticMid: Discount
-  rightDiscountFromRelativeMid: Discount
   rightEv: number
   rightLabel: Label
   rightRelativeCost: number
@@ -33,21 +41,20 @@ export function calcBet(
   const leftLabel: Label = odds1 > odds2 ? 'YES' : 'NO'
   const rightLabel: Label = leftLabel === 'NO' ? 'YES' : 'NO'
 
-  // Use arithmetic midpoint to determine amounts
-  const arithmeticMidpoint = (odds1 + odds2) / 2
-  const opposite = 100 - arithmeticMidpoint
-  const normalized =
-    arithmeticMidpoint < 50
-      ? opposite / arithmeticMidpoint
-      : arithmeticMidpoint / opposite
-  const leftAmount =
-    arithmeticMidpoint < 50 && leftLabel === 'NO' ? normalized : 1
-  const rightAmount = leftAmount === 1 ? normalized : 1
-
   // Probabilities
   const leftP = odds1 / 100
   const rightP = odds2 / 100
-  const midP = arithmeticMidpoint / 100
+
+  // Use arithmetic midpoint to determine amounts
+  const arithmeticMidpoint = (leftP + rightP) / 2
+  const opposite = 1 - arithmeticMidpoint
+  const normalized =
+    arithmeticMidpoint < 0.5
+      ? opposite / arithmeticMidpoint
+      : arithmeticMidpoint / opposite
+  const leftAmount =
+    arithmeticMidpoint < 0.5 && leftLabel === 'NO' ? normalized : 1
+  const rightAmount = leftAmount === 1 ? normalized : 1
 
   // Calculate Expected Value for each side
   // EV = (Probability of winning * Amount won) - (Probability of losing * Amount lost)
@@ -59,8 +66,8 @@ export function calcBet(
 
   // //  Discounts
   // Arithmetic
-  const leftArithmeticCost = calcCost(leftLabel, midP)
-  const rightArithmeticCost = calcCost(rightLabel, midP)
+  const leftArithmeticCost = calcCost(leftLabel, arithmeticMidpoint)
+  const rightArithmeticCost = calcCost(rightLabel, arithmeticMidpoint)
   const leftDiscountFromArithmeticMid = calcDiscount(leftP, leftArithmeticCost)
   const rightDiscountFromArithmeticMid = calcDiscount(
     rightP,
@@ -73,21 +80,31 @@ export function calcBet(
   const rightDiscountFromRelativeMid = calcDiscount(rightP, rightRelativeCost)
 
   return {
-    arithmeticMidpoint,
     leftAmount,
     leftArithmeticCost,
-    leftDiscountFromArithmeticMid,
-    leftDiscountFromRelativeMid,
     leftEv,
     leftLabel,
     leftRelativeCost,
+    newShape: {
+      linear: {
+        _midpoint: arithmeticMidpoint,
+        discounts: {
+          left: leftDiscountFromArithmeticMid,
+          right: rightDiscountFromArithmeticMid,
+        },
+      },
+      relative: {
+        _midpoint: relativeMidpoint,
+        discounts: {
+          left: leftDiscountFromRelativeMid,
+          right: rightDiscountFromRelativeMid,
+        },
+      },
+    },
     normalized,
     opposite,
-    relativeMidpoint,
     rightAmount,
     rightArithmeticCost,
-    rightDiscountFromArithmeticMid,
-    rightDiscountFromRelativeMid,
     rightEv,
     rightLabel,
     rightRelativeCost,

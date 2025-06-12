@@ -26,16 +26,16 @@ export const Calculation = ({
     )
 
   const {
-    arithmeticMidpoint,
     leftAmount,
     leftEv,
     leftLabel,
     normalized,
     opposite,
-    relativeMidpoint,
     rightAmount,
     rightLabel,
   } = bet
+
+  const calculations = usingLinear ? bet.newShape.linear : bet.newShape.relative
 
   return (
     <div>
@@ -67,28 +67,26 @@ export const Calculation = ({
             <b>Midpoint:</b>
           </span>
           <span className="relative bottom-0.5">
-            {usingLinear
-              ? arithmeticMidpoint
-              : round(relativeMidpoint * 100, 1)}
-            %
+            {round(calculations._midpoint * 100, 1)}%
           </span>
         </p>
         <p className="text-xs text-gray-500">
-          <b>Opposite:</b> {opposite}%
+          <b>Opposite:</b> {opposite * 100}%
         </p>
 
         <p className="mt-6 text-xs text-gray-500">
-          <b>Split:</b> {arithmeticMidpoint} : {opposite}
+          <b>Split:</b> {round(calculations._midpoint * 100, 1)} :{' '}
+          {opposite * 100}
         </p>
 
         <p>
           <b>Normalized:</b>{' '}
           <span>
-            {arithmeticMidpoint < 50 && <>1 : </>}
+            {calculations._midpoint < 0.5 && <>1 : </>}
             <span className="cursor-help" title={`${round(normalized, 6)}`}>
               {round(normalized, 2)}
             </span>
-            {arithmeticMidpoint >= 50 && <> : 1</>}
+            {calculations._midpoint >= 0.5 && <> : 1</>}
           </span>
         </p>
 
