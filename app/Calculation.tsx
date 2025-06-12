@@ -16,7 +16,7 @@ export const Calculation = ({
   odds1: string
   odds2: string
 }) => {
-  const [usingLinear, setUsingLinear] = useState(true)
+  const [usingLinear, setUsingLinear] = useState(false)
   const bet = calcBet(+odds1, +odds2)
   if (!bet)
     return (
@@ -50,31 +50,27 @@ export const Calculation = ({
         </div>
       </div>
 
-      {/* Simple / Kelly toggle */}
-      <div className="flex justify-between gap-2 text-center w-42 mt-6">
-        {Object.keys(midpointTypes).map((label) => (
-          <div
-            className={`cursor-pointer border rounded-md px-4 py-0.5 ${
-              usingLinear !== (label === 'Relative')
-                ? 'bg-gray-100/20 border-gray-400'
-                : 'border-gray-500'
-            }`}
-            key={label}
-            onClick={() => setUsingLinear(label === 'Linear')}
-          >
-            {label}
-          </div>
-        ))}
-      </div>
-
       <h2 className="text-sm font-bold mb-4 text-gray-500 mt-12">
         Payout Calculations
       </h2>
 
       <div className="*:flex *:justify-between *:gap-4">
-        <p>
-          <b>Midpoint:</b>{' '}
-          {usingLinear ? arithmeticMidpoint : round(relativeMidpoint * 100, 1)}%
+        <p className="items-end">
+          <span
+            className="flex flex-col cursor-pointer hover:border-gray-700 border border-transparent hover:bg-gray-800/50 rounded-md px-1.5 pt-1 pb-0.5 relative -ml-px -left-1.5"
+            onClick={() => setUsingLinear(!usingLinear)}
+          >
+            <span className="text-xs text-gray-500 cursor-pointer -mb-0.5">
+              {usingLinear ? 'Linear' : 'Relative'}
+            </span>
+            <b>Midpoint:</b>
+          </span>
+          <span className="relative bottom-1.5">
+            {usingLinear
+              ? arithmeticMidpoint
+              : round(relativeMidpoint * 100, 1)}
+            %
+          </span>
         </p>
         <p className="text-xs text-gray-500">
           <b>Opposite:</b> {opposite}%
