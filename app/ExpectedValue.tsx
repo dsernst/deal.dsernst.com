@@ -19,18 +19,14 @@ export const ExpectedValue = ({
         <div className={shouldHighlight(usingLinear)}>
           <Col value={d.left.absolute}>¢</Col>
           <Mid>Absolute</Mid>
-          <Col className="text-right" value={d.right.absolute}>
-            ¢
-          </Col>
+          <Col value={d.right.absolute}>¢</Col>
         </div>
 
         {/* Second row */}
         <div className={shouldHighlight(!usingLinear)}>
           <Col value={d.left.relative}>%</Col>
           <Mid>Relative</Mid>
-          <Col className="text-right" value={d.right.relative}>
-            %
-          </Col>
+          <Col value={d.right.relative}>%</Col>
         </div>
       </>
     </div>
@@ -52,7 +48,7 @@ const Col = ({
   className?: string
   value: number
 }) => (
-  <span className={`w-12 ${className}`}>
+  <span className={`w-12 last:text-right ${className}`}>
     <TinyPlus />
     {round(value * 100, 1)}
     {children}
