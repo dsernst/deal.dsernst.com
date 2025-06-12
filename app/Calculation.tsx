@@ -59,6 +59,7 @@ export const Calculation = ({
           <span
             className="flex flex-col cursor-pointer hover:border-gray-700 border border-transparent hover:bg-gray-800/50 rounded-md px-1.5 pt-1 pb-0.5 relative -ml-px -left-1.5"
             onClick={() => setUsingLinear(!usingLinear)}
+            title={midpointTypes[usingLinear ? 'Linear' : 'Relative']}
           >
             <span className="text-xs text-gray-500 cursor-pointer -mb-0.5">
               {usingLinear ? 'Linear' : 'Relative'}
