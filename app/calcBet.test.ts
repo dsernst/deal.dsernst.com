@@ -28,38 +28,37 @@ describe('calcBet()', () => {
   })
 
   type Odds = [number, number]
-  type EV = number
   type Expected = {
-    left: [Label, number, EV?]
+    left: [Label, number]
     midpoint?: number
     normalized?: number
     opposite?: number
-    right: [Label, number, EV?]
+    right: [Label, number]
   }
   const validInputTestCases: [Odds, Expected][] = [
     [
       [60, 40], // odds1 > odds2
       {
-        left: ['YES', 1, 0.2],
+        left: ['YES', 1],
         midpoint: 50,
         normalized: 1,
         opposite: 50,
-        right: ['NO', 1, 0.2],
+        right: ['NO', 1],
       },
     ],
     [[40, 60], { left: ['NO', 1], midpoint: 50, right: ['YES', 1] }],
     [[50, 50], { left: ['NO', 1], midpoint: 50, right: ['YES', 1] }],
     [[75, 25], { left: ['YES', 1], midpoint: 50, right: ['NO', 1] }],
     [[99, 1], { left: ['YES', 1], midpoint: 50, right: ['NO', 1] }],
-    [[70, 20], { left: ['YES', 1, 0.556], midpoint: 45, right: ['NO', 1.22] }],
+    [[70, 20], { left: ['YES', 1], midpoint: 45, right: ['NO', 1.22] }],
     [[20, 70], { left: ['NO', 1.22], right: ['YES', 1] }],
     [[48, 52], { left: ['NO', 1], right: ['YES', 1] }],
     [[2, 40], { left: ['NO', 3.76], right: ['YES', 1] }],
     [[40, 2], { left: ['YES', 1], right: ['NO', 3.76] }],
     [[1, 5], { left: ['NO', 32.33], right: ['YES', 1] }],
     [[10, 90], { left: ['NO', 1], right: ['YES', 1] }],
-    [[10, 50], { left: ['NO', 2.33, 0.667], right: ['YES', 1, 0.667] }],
-    [[50, 10], { left: ['YES', 1, 0.667], right: ['NO', 2.33, 0.667] }],
+    [[10, 50], { left: ['NO', 2.33], right: ['YES', 1] }],
+    [[50, 10], { left: ['YES', 1], right: ['NO', 2.33] }],
   ]
 
   validInputTestCases.forEach(([[odds1, odds2], expected]) => {
@@ -80,10 +79,6 @@ describe('calcBet()', () => {
         expect(result.opposite * 100).toBeCloseTo(expected.opposite)
       if (expected.normalized)
         expect(result.normalized).toBe(expected.normalized)
-      // if (expected.left[2])
-      //   expect(round(result.leftEv, 3)).toBe(expected.left[2])
-      // if (expected.right[2])
-      //   expect(round(result.rightEv, 3)).toBe(expected.right[2])
     })
   })
 })
