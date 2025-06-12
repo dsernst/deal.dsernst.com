@@ -53,18 +53,17 @@ export function calcBet(odds1: number, odds2: number): BetCalculations | null {
     right: calcDiscount(rightP, midpoint, rightLabel),
   })
 
+  // Build Midpoint Calculations
+  const midpointCalculations = (midpoint: number): MidpointCalculations => ({
+    _midpoint: midpoint,
+    ...calcAmounts(midpoint),
+    discounts: calcDiscounts(midpoint),
+  })
+
   return {
     labels: [leftLabel, rightLabel],
-    linear: {
-      _midpoint: arithmeticMidpoint,
-      ...calcAmounts(arithmeticMidpoint),
-      discounts: calcDiscounts(arithmeticMidpoint),
-    },
-    relative: {
-      _midpoint: relativeMidpoint,
-      ...calcAmounts(relativeMidpoint),
-      discounts: calcDiscounts(relativeMidpoint),
-    },
+    linear: midpointCalculations(arithmeticMidpoint),
+    relative: midpointCalculations(relativeMidpoint),
   }
 }
 
