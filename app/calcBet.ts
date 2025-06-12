@@ -52,20 +52,10 @@ export function calcBet(
   // Use relative midpoint to determine amounts
   const relativeMidpoint = getRelativeMidpoint(leftP, rightP)
 
-  // //  Discounts
-  // Arithmetic
-  const leftArithmeticCost = calcCost(leftLabel, arithmeticMidpoint)
-  const rightArithmeticCost = calcCost(rightLabel, arithmeticMidpoint)
-  const leftDiscountFromArithmeticMid = calcDiscount(leftP, leftArithmeticCost)
-  const rightDiscountFromArithmeticMid = calcDiscount(
-    rightP,
-    rightArithmeticCost
-  )
-  // Relative
-  const leftRelativeCost = calcCost(leftLabel, relativeMidpoint)
-  const rightRelativeCost = calcCost(rightLabel, relativeMidpoint)
-  const leftDiscountFromRelativeMid = calcDiscount(leftP, leftRelativeCost)
-  const rightDiscountFromRelativeMid = calcDiscount(rightP, rightRelativeCost)
+  const calcDiscounts = (midpoint: number) => ({
+    left: calcDiscount(leftP, calcCost(leftLabel, midpoint)),
+    right: calcDiscount(rightP, calcCost(rightLabel, midpoint)),
+  })
 
   return {
     labels: [leftLabel, rightLabel],
@@ -73,17 +63,11 @@ export function calcBet(
     newShape: {
       linear: {
         _midpoint: arithmeticMidpoint,
-        discounts: {
-          left: leftDiscountFromArithmeticMid,
-          right: rightDiscountFromArithmeticMid,
-        },
+        discounts: calcDiscounts(arithmeticMidpoint),
       },
       relative: {
         _midpoint: relativeMidpoint,
-        discounts: {
-          left: leftDiscountFromRelativeMid,
-          right: rightDiscountFromRelativeMid,
-        },
+        discounts: calcDiscounts(relativeMidpoint),
       },
     },
     normalized,
