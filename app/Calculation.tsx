@@ -25,19 +25,19 @@ export const Calculation = ({
       </div>
     )
 
-  const { labels, leftAmount, normalized, opposite, rightAmount } = bet
+  const { labels, newShape } = bet
 
-  const calculations = usingLinear ? bet.newShape.linear : bet.newShape.relative
+  const calculations = usingLinear ? newShape.linear : newShape.relative
 
   return (
     <div>
       <div className="flex justify-between gap-2 text-center w-42 mt-2">
         <div className="flex flex-col items-center">
-          <div>${round(usingLinear ? leftAmount : 0, 2)}</div>
+          <div>${round(calculations.amounts[0], 2)}</div>
           <Label label={labels[0]} />
         </div>
         <div className="flex flex-col items-center">
-          <div>${round(usingLinear ? rightAmount : 0, 2)}</div>
+          <div>${round(calculations.amounts[1], 2)}</div>
           <Label label={labels[1]} />
         </div>
       </div>
@@ -63,20 +63,23 @@ export const Calculation = ({
           </span>
         </p>
         <p className="text-xs text-gray-500">
-          <b>Opposite:</b> {opposite * 100}%
+          <b>Opposite:</b> {round(calculations.opposite * 100, 1)}%
         </p>
 
         <p className="mt-6 text-xs text-gray-500">
           <b>Split:</b> {round(calculations._midpoint * 100, 1)} :{' '}
-          {opposite * 100}
+          {round(calculations.opposite * 100, 1)}
         </p>
 
         <p>
           <b>Normalized:</b>{' '}
           <span>
             {calculations._midpoint < 0.5 && <>1 : </>}
-            <span className="cursor-help" title={`${round(normalized, 6)}`}>
-              {round(normalized, 2)}
+            <span
+              className="cursor-help"
+              title={`${round(calculations.normalized, 6)}`}
+            >
+              {round(calculations.normalized, 2)}
             </span>
             {calculations._midpoint >= 0.5 && <> : 1</>}
           </span>

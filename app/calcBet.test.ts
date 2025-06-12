@@ -68,16 +68,20 @@ describe('calcBet()', () => {
       if (!result) throw new Error('Result should not be null')
 
       expect(result.labels).toEqual([expected.left[0], expected.right[0]])
-      expect(round(result.leftAmount, 2)).toBe(expected.left[1])
-      expect(round(result.rightAmount, 2)).toBe(expected.right[1])
+      expect(round(result.newShape.linear.amounts[0], 2)).toBe(expected.left[1])
+      expect(round(result.newShape.linear.amounts[1], 2)).toBe(
+        expected.right[1]
+      )
       if (expected.midpoint)
         expect(result.newShape.linear._midpoint * 100).toBeCloseTo(
           expected.midpoint
         )
       if (expected.opposite)
-        expect(result.opposite * 100).toBeCloseTo(expected.opposite)
+        expect(result.newShape.linear.opposite * 100).toBeCloseTo(
+          expected.opposite
+        )
       if (expected.normalized)
-        expect(result.normalized).toBe(expected.normalized)
+        expect(result.newShape.linear.normalized).toBe(expected.normalized)
     })
   })
 })

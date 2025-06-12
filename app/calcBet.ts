@@ -4,10 +4,13 @@ type Discount = { absolute: number; relative: number }
 
 type MidpointShape = {
   _midpoint: number
+  amounts: readonly [number, number]
   discounts: {
     left: Discount
     right: Discount
   }
+  normalized: number
+  opposite: number
 }
 
 type NewShape = {
@@ -20,11 +23,7 @@ export function calcBet(
   odds2: number
 ): null | {
   labels: [Label, Label]
-  leftAmount: number
   newShape: NewShape
-  normalized: number
-  opposite: number
-  rightAmount: number
 } {
   if (!odds1 || !odds2) return null
   if (odds1 === 0 || odds2 === 0) return null
@@ -38,20 +37,22 @@ export function calcBet(
   const leftP = odds1 / 100
   const rightP = odds2 / 100
 
-  // Use arithmetic midpoint to determine amounts
+  // Midpoints
   const arithmeticMidpoint = (leftP + rightP) / 2
-  const opposite = 1 - arithmeticMidpoint
-  const normalized =
-    arithmeticMidpoint < 0.5
-      ? opposite / arithmeticMidpoint
-      : arithmeticMidpoint / opposite
-  const leftAmount =
-    arithmeticMidpoint < 0.5 && leftLabel === 'NO' ? normalized : 1
-  const rightAmount = leftAmount === 1 ? normalized : 1
-
-  // Use relative midpoint to determine amounts
   const relativeMidpoint = getRelativeMidpoint(leftP, rightP)
 
+  // Amounts
+  const calcAmounts = (midpoint: number) => {
+    const opposite = 1 - midpoint
+    const normalized =
+      midpoint < 0.5 ? opposite / midpoint : midpoint / opposite
+    const leftAmount = midpoint < 0.5 && leftLabel === 'NO' ? normalized : 1
+    const rightAmount = leftAmount === 1 ? normalized : 1
+    const amounts = [leftAmount, rightAmount] as const
+    return { amounts, normalized, opposite }
+  }
+
+  // Discounts
   const calcDiscounts = (midpoint: number) => ({
     left: calcDiscount(leftP, calcCost(leftLabel, midpoint)),
     right: calcDiscount(rightP, calcCost(rightLabel, midpoint)),
@@ -59,20 +60,18 @@ export function calcBet(
 
   return {
     labels: [leftLabel, rightLabel],
-    leftAmount,
     newShape: {
       linear: {
         _midpoint: arithmeticMidpoint,
+        ...calcAmounts(arithmeticMidpoint),
         discounts: calcDiscounts(arithmeticMidpoint),
       },
       relative: {
         _midpoint: relativeMidpoint,
+        ...calcAmounts(relativeMidpoint),
         discounts: calcDiscounts(relativeMidpoint),
       },
     },
-    normalized,
-    opposite,
-    rightAmount,
   }
 }
 
