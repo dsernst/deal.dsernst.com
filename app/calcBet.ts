@@ -1,8 +1,6 @@
 export type Label = 'NO' | 'YES'
 
-type Discount = { absolute: number; relative: number }
-
-type MidpointShape = {
+export type MidpointCalculations = {
   _midpoint: number
   amounts: readonly [number, number]
   discounts: {
@@ -13,14 +11,15 @@ type MidpointShape = {
   opposite: number
 }
 
-export function calcBet(
-  odds1: number,
-  odds2: number
-): null | {
+type BetCalculations = {
   labels: [Label, Label]
-  linear: MidpointShape
-  relative: MidpointShape
-} {
+  linear: MidpointCalculations
+  relative: MidpointCalculations
+}
+
+type Discount = { absolute: number; relative: number }
+
+export function calcBet(odds1: number, odds2: number): BetCalculations | null {
   if (!odds1 || !odds2) return null
   if (odds1 === 0 || odds2 === 0) return null
   if (Number.isNaN(odds1) || Number.isNaN(odds2)) return null
