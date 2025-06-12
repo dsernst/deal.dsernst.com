@@ -13,17 +13,13 @@ type MidpointShape = {
   opposite: number
 }
 
-type NewShape = {
-  linear: MidpointShape
-  relative: MidpointShape
-}
-
 export function calcBet(
   odds1: number,
   odds2: number
 ): null | {
   labels: [Label, Label]
-  newShape: NewShape
+  linear: MidpointShape
+  relative: MidpointShape
 } {
   if (!odds1 || !odds2) return null
   if (odds1 === 0 || odds2 === 0) return null
@@ -60,17 +56,15 @@ export function calcBet(
 
   return {
     labels: [leftLabel, rightLabel],
-    newShape: {
-      linear: {
-        _midpoint: arithmeticMidpoint,
-        ...calcAmounts(arithmeticMidpoint),
-        discounts: calcDiscounts(arithmeticMidpoint),
-      },
-      relative: {
-        _midpoint: relativeMidpoint,
-        ...calcAmounts(relativeMidpoint),
-        discounts: calcDiscounts(relativeMidpoint),
-      },
+    linear: {
+      _midpoint: arithmeticMidpoint,
+      ...calcAmounts(arithmeticMidpoint),
+      discounts: calcDiscounts(arithmeticMidpoint),
+    },
+    relative: {
+      _midpoint: relativeMidpoint,
+      ...calcAmounts(relativeMidpoint),
+      discounts: calcDiscounts(relativeMidpoint),
     },
   }
 }
@@ -80,7 +74,6 @@ function calcCost(label: Label, midpoint: number) {
 }
 
 function calcDiscount(value: number, cost: number) {
-  // console.log({ cost, value })
   const absolute = value - cost
   const relative = absolute / value
   return { absolute, relative }

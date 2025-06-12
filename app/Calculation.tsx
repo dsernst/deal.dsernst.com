@@ -25,9 +25,8 @@ export const Calculation = ({
       </div>
     )
 
-  const { labels, newShape } = bet
-
-  const calculations = usingLinear ? newShape.linear : newShape.relative
+  const { labels } = bet
+  const calculations = usingLinear ? bet.linear : bet.relative
 
   return (
     <div>

@@ -68,20 +68,14 @@ describe('calcBet()', () => {
       if (!result) throw new Error('Result should not be null')
 
       expect(result.labels).toEqual([expected.left[0], expected.right[0]])
-      expect(round(result.newShape.linear.amounts[0], 2)).toBe(expected.left[1])
-      expect(round(result.newShape.linear.amounts[1], 2)).toBe(
-        expected.right[1]
-      )
+      expect(round(result.linear.amounts[0], 2)).toBe(expected.left[1])
+      expect(round(result.linear.amounts[1], 2)).toBe(expected.right[1])
       if (expected.midpoint)
-        expect(result.newShape.linear._midpoint * 100).toBeCloseTo(
-          expected.midpoint
-        )
+        expect(result.linear._midpoint * 100).toBeCloseTo(expected.midpoint)
       if (expected.opposite)
-        expect(result.newShape.linear.opposite * 100).toBeCloseTo(
-          expected.opposite
-        )
+        expect(result.linear.opposite * 100).toBeCloseTo(expected.opposite)
       if (expected.normalized)
-        expect(result.newShape.linear.normalized).toBe(expected.normalized)
+        expect(result.linear.normalized).toBe(expected.normalized)
     })
   })
 })
@@ -191,20 +185,20 @@ describe('relativeMidpoints', () => {
       const results = calcBet(inputs[0], inputs[1])
       if (!results) throw new Error('Results should not be null')
 
-      const actuals = traverseTree(results.newShape)
+      const actuals = traverseTree(results)
       // console.log(actuals)
       for (const [key, actual] of Object.entries(actuals)) {
         expect(actual, key).toBeCloseTo(getNestedValue(outputs, key), 3)
       }
 
       // Linear midpoint's absolute discounts should be equal
-      expect(results.newShape.linear.discounts.left.absolute).toBeCloseTo(
-        results.newShape.linear.discounts.right.absolute,
+      expect(results.linear.discounts.left.absolute).toBeCloseTo(
+        results.linear.discounts.right.absolute,
         10
       )
       // Relative midpoint's relative discounts should be equal
-      expect(results.newShape.relative.discounts.left.relative).toBeCloseTo(
-        results.newShape.relative.discounts.right.relative,
+      expect(results.relative.discounts.left.relative).toBeCloseTo(
+        results.relative.discounts.right.relative,
         10
       )
 
@@ -212,8 +206,8 @@ describe('relativeMidpoints', () => {
       const reversedResults = calcBet(inputs[1], inputs[0])
       if (!reversedResults)
         throw new Error('Reversed results should not be null')
-      expect(results.newShape.relative._midpoint).toBeCloseTo(
-        reversedResults.newShape.relative._midpoint,
+      expect(results.relative._midpoint).toBeCloseTo(
+        reversedResults.relative._midpoint,
         10
       )
     })
