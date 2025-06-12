@@ -18,6 +18,8 @@ export const Calculation = ({
 }) => {
   const [usingLinear, setUsingLinear] = useState(false)
   const bet = calcBet(+odds1, +odds2)
+
+  // Message if no bet
   if (!bet)
     return (
       <div className="opacity-30 italic h-74 pt-8">
