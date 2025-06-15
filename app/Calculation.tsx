@@ -10,6 +10,9 @@ const midpointTypes = {
     'Balances the perceived % advantage for each person, based on how confident they are.',
 }
 
+export const ClickableClasses =
+  'cursor-pointer border border-transparent hover:bg-gray-800/50 hover:border-gray-700 active:bg-gray-800 active:border-gray-700 rounded-md pt-1 pb-0.5 relative -ml-px'
+
 export const Calculation = ({
   odds1,
   odds2,
@@ -58,7 +61,7 @@ export const Calculation = ({
         <p className="items-end">
           {/* Midpoint Switcher */}
           <span
-            className="flex flex-col cursor-pointer border border-transparent hover:bg-gray-800/50 hover:border-gray-700 active:bg-gray-800 active:border-gray-700 rounded-md px-1.5 pt-1 pb-0.5 relative -ml-px -left-1.5"
+            className={`flex flex-col px-1.5 -left-1.5 ${ClickableClasses}`}
             onClick={() => setUsingLinear(!usingLinear)}
             title={midpointTypes[usingLinear ? 'Linear' : 'Relative']}
           >
