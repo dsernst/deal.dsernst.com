@@ -17,7 +17,7 @@ Simple linear mid: 74.5%
 
 ## Person 1: Expected Gain
 
-YES @ $.745 per $1  
+YES @ $.745 per Y$1  
 (believe 99%— willing to pay .99)
 
 .745 cost  
@@ -28,7 +28,7 @@ YES @ $.745 per $1
 
 ## Person 2: Expected Gain
 
-NO @ $.255 per $1  
+NO @ $.255 per N$1  
 (believe 50%— willing to pay .50)
 
 .255 cost  
@@ -55,7 +55,7 @@ relative mid: `x` <--- Unknown value we want to solve for.
 
 ### From P1's Perspective
 
-YES @ x per $1  
+YES @ x per Y$1  
 (believe 99%— willing to pay .99)
 
 x cost  
@@ -66,7 +66,7 @@ y / .99 = z relative discount
 
 ### From P2's Perspective
 
-NO @ (1-x) per $1  
+NO @ (1-x) per N$1  
 (believe 50%— willing to pay .50)
 
 (1-x) cost  
@@ -109,7 +109,7 @@ x = 0.6644
 
 ### For p1:
 
-YES @ $.6644 per $1  
+YES @ $.6644 per Y$1  
 (believe 99%— willing to pay .99)
 
 .6644 cost  
@@ -120,7 +120,7 @@ YES @ $.6644 per $1
 
 ### For p2:
 
-NO @ $.336 per $1  
+NO @ $.336 per N$1  
 (believe 50%— willing to pay .50)
 
 .336 cost  
