@@ -40,8 +40,8 @@ export const ExpectedValue = ({
         // Condensed view
         <div className="flex w-full justify-between items-center">
           {/* Left label */}
-          <div className="self-center font-bold text-[10px]">
-            Each Person&apos;s <span className="text-white/70">EV</span>
+          <div className="self-center font-bold text-[10px] mr-3">
+            Each Person&apos;s <span className="text-white/70">Surplus</span>
           </div>
 
           {/* Right value */}
@@ -57,9 +57,7 @@ export const ExpectedValue = ({
         // Expanded view
         <div className="flex flex-col !gap-1 w-full *:flex *:gap-1 *:justify-between *:items-center">
           {/* Table title */}
-          <div className="self-center font-bold text-[10px]">
-            Expected Value
-          </div>
+          <div className="self-center font-bold text-[10px]">Surplus Value</div>
 
           {/* 2x2 table */}
           <>

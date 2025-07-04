@@ -78,7 +78,7 @@ function calcDiscount(value: number, cost: number, label: Label) {
   return { absolute, relative }
 }
 
-/** Given two probabilities between (0,1), find the midpoint that equalizes their relative EVs */
+/** Given two probabilities between (0,1), find the midpoint that equalizes their relative Surplus Values */
 export const getRelativeMidpoint = (p1: number, p2: number): number => {
   const yes = Math.max(p1, p2)
   const no = Math.min(p1, p2)
