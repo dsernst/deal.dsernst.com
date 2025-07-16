@@ -56,6 +56,7 @@ describe('calcBet()', () => {
     [[2, 40], { left: ['NO', 3.76], right: ['YES', 1] }],
     [[40, 2], { left: ['YES', 1], right: ['NO', 3.76] }],
     [[1, 5], { left: ['NO', 32.33], right: ['YES', 1] }],
+    [[5, 1], { left: ['YES', 1], right: ['NO', 32.33] }],
     [[10, 90], { left: ['NO', 1], right: ['YES', 1] }],
     [[10, 50], { left: ['NO', 2.33], right: ['YES', 1] }],
     [[50, 10], { left: ['YES', 1], right: ['NO', 2.33] }],
@@ -213,6 +214,22 @@ describe('relativeMidpoints', () => {
             left: { absolute: 0.1, relative: 0.1666 },
             right: { absolute: 0.1, relative: 0.1666 },
           },
+        },
+      },
+    },
+    {
+      inputs: [65, 99],
+      outputs: {
+        linear: {
+          amounts: [1, 4.5555],
+        },
+      },
+    },
+    {
+      inputs: [99, 65],
+      outputs: {
+        linear: {
+          amounts: [4.5555, 1],
         },
       },
     },

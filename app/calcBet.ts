@@ -41,9 +41,15 @@ export function calcBet(odds1: number, odds2: number): BetCalculations | null {
     const opposite = 1 - midpoint
     const normalized =
       midpoint < 0.5 ? opposite / midpoint : midpoint / opposite
-    const leftAmount = midpoint < 0.5 && leftLabel === 'NO' ? normalized : 1
-    const rightAmount = leftAmount === 1 ? normalized : 1
+
+    let leftAmount = 1 // Assume left is closer to 50%
+    let rightAmount = normalized
+    // Swap if right is closer to 50%
+    if (Math.abs(leftP - 0.5) > Math.abs(rightP - 0.5))
+      [leftAmount, rightAmount] = [rightAmount, leftAmount]
+
     const amounts = [leftAmount, rightAmount] as const
+    // console.log({ amounts, leftP, midpoint, rightP })
     return { amounts, normalized, opposite }
   }
 
