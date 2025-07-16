@@ -37,19 +37,23 @@ export const Calculation = ({
   return (
     <div>
       {/* Payout */}
-      <div className="flex justify-between gap-2 text-center w-42 mt-2">
-        <div className="flex flex-col items-center">
-          {/* Amount[0] */}
-          <div>${round(calculations.amounts[0], 2)}</div>
-          {/* YES/NO Label */}
-          <Label label={labels[0]} />
-        </div>
-        <div className="flex flex-col items-center">
-          {/* Amount[1] */}
-          <div>${round(calculations.amounts[1], 2)}</div>
-          {/* YES/NO Label */}
-          <Label label={labels[1]} />
-        </div>
+      <div className="flex justify-between gap-2 text-center w-52 mt-2">
+        {[0, 1]
+          .flatMap((i) => [
+            // Left & Right Amounts
+            <div className="flex flex-col items-center w-16" key={i}>
+              <div>${round(calculations.amounts[i], 2)}</div> {/* Amount */}
+              <Label label={labels[i]} /> {/* Label */}
+            </div>,
+
+            // Separator after 1st item
+            !i && (
+              <div className="text-xs text-gray-500 mt-1" key="sep">
+                wager
+              </div>
+            ),
+          ])
+          .filter(Boolean)}
       </div>
 
       {/* Payout Calculations */}
