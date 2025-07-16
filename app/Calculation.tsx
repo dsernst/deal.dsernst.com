@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { calcBet, type Label, round } from './calcBet'
+import { calcBet, type Label, MidpointCalculations, round } from './calcBet'
 import { ExpectedValue } from './ExpectedValue'
 
 const midpointTypes = {
@@ -56,6 +56,22 @@ export const Calculation = ({
           .filter(Boolean)}
       </div>
 
+      <PayoutCalculations {...{ calculations, setUsingLinear, usingLinear }} />
+    </div>
+  )
+}
+
+const PayoutCalculations = ({
+  calculations,
+  setUsingLinear,
+  usingLinear,
+}: {
+  calculations: MidpointCalculations
+  setUsingLinear: (usingLinear: boolean) => void
+  usingLinear: boolean
+}) => {
+  return (
+    <>
       {/* Payout Calculations */}
       <h2 className="text-sm font-bold mb-4 text-gray-500 mt-12">
         Payout Calculations
@@ -108,7 +124,7 @@ export const Calculation = ({
 
         <ExpectedValue {...{ calculations, usingLinear }} />
       </div>
-    </div>
+    </>
   )
 }
 
