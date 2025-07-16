@@ -247,6 +247,12 @@ describe('relativeMidpoints', () => {
         reversedResults.relative._midpoint,
         10
       )
+
+      // Amounts should flip when inputs are flipped
+      expect(results.linear.amounts[0]).toBeCloseTo(
+        reversedResults.linear.amounts[1],
+        10
+      )
     })
   }
 })
