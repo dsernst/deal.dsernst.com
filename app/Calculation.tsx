@@ -11,7 +11,7 @@ const midpointTypes = {
 }
 
 export const ClickableClasses =
-  'cursor-pointer border border-transparent hover:bg-gray-800/50 hover:border-gray-700 active:bg-gray-800 active:border-gray-700 rounded-md pt-1 pb-0.5 relative -ml-px'
+  'cursor-pointer border border-gray-800/50 hover:bg-gray-800/50 hover:border-gray-700 active:bg-gray-800 active:border-gray-700 rounded-md pt-1 pb-0.5 relative -ml-px'
 
 export const Calculation = ({
   odds1,
@@ -21,6 +21,7 @@ export const Calculation = ({
   odds2: string
 }) => {
   const [usingLinear, setUsingLinear] = useState(false)
+  const [calcsExpanded, setCalcsExpanded] = useState(false)
   const bet = calcBet(+odds1, +odds2)
 
   // Message if no bet
@@ -56,7 +57,18 @@ export const Calculation = ({
           .filter(Boolean)}
       </div>
 
-      <PayoutCalculations {...{ calculations, setUsingLinear, usingLinear }} />
+      {/* Payout Calculations Toggle */}
+      <h2
+        className={`text-sm font-bold mb-4 text-gray-500 mt-12 text-center cursor-pointer ${ClickableClasses}`}
+        onClick={() => setCalcsExpanded(!calcsExpanded)}
+      >
+        {calcsExpanded ? '' : 'Show'} Payout Calculations
+      </h2>
+      {calcsExpanded && (
+        <PayoutCalculations
+          {...{ calculations, setUsingLinear, usingLinear }}
+        />
+      )}
     </div>
   )
 }
@@ -72,11 +84,6 @@ const PayoutCalculations = ({
 }) => {
   return (
     <>
-      {/* Payout Calculations */}
-      <h2 className="text-sm font-bold mb-4 text-gray-500 mt-12">
-        Payout Calculations
-      </h2>
-
       <div className="*:flex *:justify-between *:gap-4">
         <p className="items-end">
           {/* Midpoint Switcher */}
