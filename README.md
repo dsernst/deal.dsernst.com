@@ -22,7 +22,7 @@ Each party commits to:
 
 The protocol does:
 
-1. **Privately compares** the two values
+1. **Securely checks** whether buyer’s Bid ≥ seller’s Ask — without revealing either
 2. If there’s **no overlap** (Max Bid < Min Ask), outputs: `❌ no overlap, sorry`
 3. If there **is overlap** (Max Bid ≥ Min Ask), outputs: `✅ fair price` computed as:
 
@@ -38,16 +38,19 @@ fair_price = randomIntegerBetween(seller_min_ask, buyer_max_bid)
 - **Prevents anchoring:** Neither party controls the framing
 - **Repeatable fairness:** Over time, expected outcomes balance out
 
+On average, both sides gain. In any round, neither side can exploit the other.
+
 ### 📈 Economic Implications
 
 If adopted:
 
 - Massive drop in **negotiation friction costs**
 - Faster resolution of deals, from personal favors to billion-dollar M&A
-- Could lead to market design upgrades—e.g., in labor markets, procurement, B2B deals, etc.
 - Strategically, **defangs aggressive negotiation tactics**, encouraging better long-term relationships
 
 ### 🎯 “One-Shot” Commitment = Strategic Key
+
+The “one-shot” rule isn’t just a formality—it’s what makes honesty the winning move.
 
 If parties **only get one shot**, then:
 
@@ -76,18 +79,14 @@ So: **one-shot-ness is critical** to preserving honesty incentives.
 
 ### 💡 Summary of Strategyproof Conditions
 
-To make this system strategyproof:
+These are the conditions under which **truth-telling becomes the optimal strategy**:
 
-1. **Single-shot protocol** — enforced by social norm, legal agreement, or smart contract
-2. **Random fair price within overlap range** — prevents anchoring or manipulation
-3. **Clear surplus-sharing mechanism** — ensures both parties gain, discouraging brinkmanship
-4. **No benefit to misreporting** — lies risk either:
-   - Missing the deal (if too aggressive)
-   - Getting a worse outcome (if too conservative)
+1. ✅ **Single-shot protocol** — no retries
+2. 🎲 **Randomized fair price** — private and prevents anchoring
+3. 🤝 **Surplus-sharing** — ensures mutual gain
+4. 🚫 **No incentive to lie** — misreporting carries risk
 
-If those are met, **truth-telling is optimal** — and we have a strategyproof negotiation protocol.
-
-## One-Shot Agreements
+## Enforcing One-Shot Agreements
 
 ### Type 1 - Verbal/Social One-Shot Agreement
 
@@ -97,7 +96,7 @@ If those are met, **truth-telling is optimal** — and we have a strategyproof n
 - **Downside**: requires mutual discipline; if one party breaks the agreement, there’s no consequence unless the other retaliates (reputation, future dealings, etc.)
 - **Best fit**: friends, collaborators, small teams, those playing repeated games
 
-This protocol works best when both parties value honesty, speed, clarity, and long-term relationship over short-term extraction.
+This approach works best when both parties value honesty, speed, clarity, and long-term mutual gain over short-term extraction.
 
 #### Example One-Shot Negotiation Agreement:
 
@@ -110,6 +109,8 @@ This protocol works best when both parties value honesty, speed, clarity, and lo
 >
 > No retries, no second rounds, no re-opening the negotiation afterward.
 
+---
+
 ### Type 2 - For high-stakes deals, Legal One-Shot Contract
 
 Violating it could void enforceability of the result, or trigger penalty clauses.
@@ -119,6 +120,12 @@ Violating it could void enforceability of the result, or trigger penalty clauses
 - **Upside**: externalized enforcement; clearly legible consequence (e.g. invalidating deal or triggering penalties)
 - **Downside**: overhead, lawyer involvement, harder to use in fast-paced or informal settings
 - **Best fit**: Large investment deals, acquisitions, licensing negotiations, real estate
+
+&nbsp;
+
+---
+
+<h3 align="center">A new norm: quick, truth-aligned, built for infinite games.</h3>
 
 &nbsp;
 
