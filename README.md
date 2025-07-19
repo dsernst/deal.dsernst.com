@@ -1,17 +1,19 @@
 # [deal.dsernst.com](https://deal.dsernst.com)
 
-### A strategyproof, privacy-preserving negotiation protocol with:
+A new kind of negotiation:
+
+#### Strategyproof. Private. Fair. Chill.
+
+Works for job offers, acquisitions, favors, and more.
+
+### Key Properties:
 
 - Dominant-strategy truthfulness
 - No trusted third party
 - Guaranteed fairness and mutual surplus
 - No post-negotiation regret or information leakage
 
-In other words: **honest, chill, efficient deals**.
-
----
-
-### 🔑 Core Protocol
+## 🔑 Core Protocol
 
 Each party commits to:
 
