@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 
-import { Inputs } from './Content'
+import type { Inputs } from './Content'
 
 export function PrivateInput({
   inputs,
@@ -30,7 +30,7 @@ export function PrivateInput({
         {/* Input Box */}
         <input
           autoFocus
-          className="px-3 py-2 h-20 w-30 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 no-number-controls text-3xl"
+          className="px-3 py-2 h-20 w-40 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 no-number-controls text-3xl"
           onChange={(e) => setTempInput(e.target.value)}
           pattern="\d*"
           type="number"
