@@ -18,7 +18,7 @@ export const Calculation = ({
 
   return (
     <div className="flex flex-col items-center justify-center gap-4">
-      Fairly-random point acceptable to both:
+      Random point between (seller_min, buyer_max):
       <div className="text-2xl font-bold">✅ {result.toFixed(2)}</div>
     </div>
   )
