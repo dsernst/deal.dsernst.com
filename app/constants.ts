@@ -1,2 +1,2 @@
-export const title = 'Fair Deals'
+export const title = 'Fair Deal Calculator'
 export const description = 'Private inputs → mutual gain'
