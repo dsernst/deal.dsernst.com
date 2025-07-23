@@ -21,7 +21,17 @@ export function Content() {
       {/* Private inputs */}
       <PrivateInput {...{ inputs: [input1, input2], setValues }} />
 
+      {/* Results */}
       <Calculation {...{ input1, input2 }} />
+
+      {/* Learn more */}
+      <a
+        className="text-sm text-gray-400 mt-16 block hover:underline"
+        href="https://github.com/dsernst/deal.dsernst.com#dealdsernstcom"
+        target="_blank"
+      >
+        Learn more
+      </a>
     </div>
   )
 }
