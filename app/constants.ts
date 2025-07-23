@@ -1,2 +1,2 @@
-export const title = 'Bet Calculator'
-export const description = 'Price 2-person bets fast & fairly'
+export const title = 'Fair Deals'
+export const description = 'Private inputs → mutual gain'
