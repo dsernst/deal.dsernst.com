@@ -4,6 +4,7 @@ import { useState } from 'react'
 
 import { Calculation } from './Calculation'
 import { description, title } from './constants'
+import { OneShotAgreement } from './OneShotAgreement'
 import { PrivateInput } from './PrivateInput'
 
 export type Inputs = [string, string]
@@ -23,6 +24,8 @@ export function Content() {
 
       {/* Results */}
       <Calculation {...{ input1, input2 }} />
+
+      <OneShotAgreement />
 
       {/* Learn more */}
       <a
