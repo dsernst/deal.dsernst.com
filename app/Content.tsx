@@ -1,12 +1,14 @@
 'use client'
 
+import { useState } from 'react'
+
 import { Calculation } from './Calculation'
 import { description, title } from './constants'
-import OddsInput from './OddsInput'
-import { useUrlHashState } from './useUrlHashState'
+import { PrivateInput } from './PrivateInput'
 
+export type Inputs = [string, string]
 export function Content() {
-  const [[odds1, odds2], setHashValues] = useUrlHashState()
+  const [[input1, input2], setValues] = useState<Inputs>(['', ''])
 
   return (
     <div
@@ -16,10 +18,10 @@ export function Content() {
       <h1 className="text-4xl font-bold mb-4">{title}</h1>
       <p className="text-lg text-gray-400 mb-8">{description}</p>
 
-      {/* Odds inputs */}
-      <OddsInput {...{ odds: [odds1, odds2], setHashValues }} />
+      {/* Private inputs */}
+      <PrivateInput {...{ inputs: [input1, input2], setValues }} />
 
-      <Calculation {...{ odds1, odds2 }} />
+      <Calculation {...{ input1, input2 }} />
     </div>
   )
 }
