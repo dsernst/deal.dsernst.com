@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 
 import type { Inputs } from './Content'
 
@@ -13,6 +13,7 @@ export function PrivateInput({
 }) {
   const [index, setIndex] = useState(0)
   const [tempInput, setTempInput] = useState('')
+  const $submit = useRef<HTMLButtonElement>(null)
 
   if (index === 2) return null
 
@@ -32,6 +33,7 @@ export function PrivateInput({
           autoFocus
           className="px-3 py-2 h-20 w-40 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 no-number-controls text-3xl"
           onChange={(e) => setTempInput(e.target.value)}
+          onKeyDown={(e) => e.key === 'Enter' && $submit.current?.click()}
           pattern="\d*"
           type="number"
           value={tempInput}
@@ -47,6 +49,7 @@ export function PrivateInput({
             setIndex(index + 1)
             setTempInput('')
           }}
+          ref={$submit}
         >
           Next
         </button>
