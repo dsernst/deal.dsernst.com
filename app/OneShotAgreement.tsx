@@ -21,8 +21,8 @@ export function OneShotAgreement() {
       </p>
       <p>
         If there <b className="text-green-300">is an overlap</b>, the protocol
-        will pick a fair price in that range, and we commit to accepting the
-        outcome.
+        will pick a fair-random price in that range, and we commit to accepting
+        the outcome.
       </p>
 
       <p>
