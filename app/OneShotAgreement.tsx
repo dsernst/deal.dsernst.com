@@ -1,7 +1,7 @@
 export function OneShotAgreement() {
   return (
-    <div className="max-w-xl text-center mt-16 gap-5 flex flex-col">
-      <h2 className="text-2xl font-bold">One Shot Agreement</h2>
+    <div className="max-w-xl text-center mt-24 border-t border-white/10 pt-24 gap-5 flex flex-col">
+      <h2 className="text-[21px] font-semibold">Agreement for Win-Win Deals</h2>
       <p>
         We each have a <b className="text-cyan-200">private cut-off point</b> —
         <br />
