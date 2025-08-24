@@ -25,7 +25,7 @@ export function PrivateInput({
           className="text-sm font-medium mb-1 text-center"
           htmlFor={`odds${index + 1}`}
         >
-          {index === 0 ? "Seller's Min Ask" : "Buyer's Max Bid"}
+          {index === 0 ? "Seller's Min" : "Buyer's Max"} Price
         </label>
 
         {/* Input Box */}
