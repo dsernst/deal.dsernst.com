@@ -4,6 +4,7 @@ import { useState } from 'react'
 
 import { Calculation } from './Calculation'
 import { description, title } from './constants'
+import { ModeContainer } from './ModeSwitcher'
 import { OneShotAgreement } from './OneShotAgreement'
 import { PrivateInput } from './PrivateInput'
 
@@ -23,9 +24,14 @@ export function Content() {
       <PrivateInput {...{ inputs: [input1, input2], setValues }} />
 
       {/* Results */}
-      <Calculation {...{ input1, input2 }} />
-
-      <OneShotAgreement />
+      <ModeContainer tabs={['Report Overlap Only', 'Pick Fair Price']}>
+        {({ activeTab, ModeSwitcher }) => (
+          <>
+            <Calculation {...{ input1, input2 }} />
+            <OneShotAgreement {...{ activeTab, ModeSwitcher }} />
+          </>
+        )}
+      </ModeContainer>
 
       {/* Learn more */}
       <a

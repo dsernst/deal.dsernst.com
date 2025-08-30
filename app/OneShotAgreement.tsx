@@ -1,7 +1,19 @@
-export function OneShotAgreement() {
+export function OneShotAgreement({
+  activeTab,
+  ModeSwitcher,
+}: {
+  activeTab: number
+  ModeSwitcher: React.ReactNode
+}) {
+  const overlapOnly = activeTab === 0
+
   return (
-    <div className="max-w-xl text-center mt-24 border-t border-white/10 pt-24 gap-5 flex flex-col">
-      <h2 className="text-[21px] font-semibold">Agreement for Win-Win Deals</h2>
+    <div className="max-w-xl text-center mt-24 border-t border-white/10 pt-14 gap-5 flex flex-col">
+      {ModeSwitcher}
+
+      <h2 className="text-[21px] font-semibold mt-8">
+        Agreement for {overlapOnly ? 'Finding Possible Deals' : 'Win-Win Deals'}
+      </h2>
       <p>
         We each have a <b className="text-cyan-200">private cut-off point</b> —
         <br />
@@ -21,12 +33,19 @@ export function OneShotAgreement() {
       </p>
       <p>
         If there <b className="text-green-300">is an overlap</b>, the protocol
-        will pick a fair-random price in that range, and we commit to accepting
-        the outcome.
+        will{' '}
+        {overlapOnly
+          ? 'let us know, without revealing our private cut-offs points'
+          : 'pick a fair-random price in that range, and we commit to accepting the outcome'}
+        .
       </p>
 
       <p>
-        No retries, no second rounds, no re-opening the negotiation afterward.
+        No retries
+        {overlapOnly
+          ? ". No need to waste either of our time if there isn't a win-win deal possible in the first place"
+          : ', no second rounds, no re-opening the negotiation afterward'}
+        .
       </p>
     </div>
   )
