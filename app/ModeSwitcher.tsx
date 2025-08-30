@@ -5,16 +5,16 @@ export const ModeContainer = ({
   tabs,
 }: {
   children: (props: {
-    activeTab: number
     ModeSwitcher: React.ReactNode
+    overlapOnly: boolean
   }) => React.ReactNode
   tabs: string[]
 }) => {
   const [activeTab, setActiveTab] = useState<number>(0)
 
   return children({
-    activeTab,
     ModeSwitcher: <ModeSwitcher {...{ activeTab, setActiveTab, tabs }} />,
+    overlapOnly: activeTab === 0,
   })
 }
 

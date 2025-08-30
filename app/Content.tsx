@@ -25,10 +25,10 @@ export function Content() {
 
       {/* Results */}
       <ModeContainer tabs={['Report Overlap Only', 'Pick Fair Price']}>
-        {({ activeTab, ModeSwitcher }) => (
+        {({ ModeSwitcher, overlapOnly }) => (
           <>
-            <Calculation {...{ input1, input2 }} />
-            <OneShotAgreement {...{ activeTab, ModeSwitcher }} />
+            <Calculation {...{ input1, input2, overlapOnly }} />
+            <OneShotAgreement {...{ ModeSwitcher, overlapOnly }} />
           </>
         )}
       </ModeContainer>

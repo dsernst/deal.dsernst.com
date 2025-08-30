@@ -1,12 +1,10 @@
 export function OneShotAgreement({
-  activeTab,
   ModeSwitcher,
+  overlapOnly,
 }: {
-  activeTab: number
   ModeSwitcher: React.ReactNode
+  overlapOnly: boolean
 }) {
-  const overlapOnly = activeTab === 0
-
   return (
     <div className="max-w-xl text-center mt-24 border-t border-white/10 pt-14 gap-5 flex flex-col">
       {ModeSwitcher}
