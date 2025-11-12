@@ -1,6 +1,6 @@
 // Compact payload schema - just the encrypted value
 // Everything (value, contact, timestamp, role) is encrypted together
-// Format: iv.authTag.encryptedData (all base64url, . as separator)
+// Format: iv.encryptedData (all base64url, . as separator)
 export type CompactPayload = {
   ev: string // encryptedValue containing encrypted PlaintextData
 }

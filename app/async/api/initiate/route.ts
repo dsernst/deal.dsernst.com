@@ -36,17 +36,16 @@ export async function POST(request: NextRequest) {
       v: value,
     })
 
-    const iv = crypto.randomBytes(12)
-    const cipher = crypto.createCipheriv('aes-256-gcm', ENCRYPTION_KEY, iv)
+    const iv = crypto.randomBytes(16)
+    const cipher = crypto.createCipheriv('aes-256-ctr', ENCRYPTION_KEY, iv)
 
     const encryptedBuffer = Buffer.concat([
       cipher.update(plaintextBuffer),
       cipher.final(),
     ])
-    const authTag = cipher.getAuthTag().slice(0, 12) // Truncate to 12 bytes (96 bits), still secure for short-lived payloads
     // Use base64url (no padding) for more compact encoding
-    // Format: iv.authTag.encryptedData (using . as separator, URL-safe)
-    const encryptedValue = [iv, authTag, encryptedBuffer]
+    // Format: iv.encryptedData (using . as separator, URL-safe)
+    const encryptedValue = [iv, encryptedBuffer]
       .map((b) => b.toString('base64url'))
       .join('.')
 
