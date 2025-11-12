@@ -1,14 +1,8 @@
 import { useEffect, useState } from 'react'
 
-import { type Choices } from './RoleSelector'
+import type { CompactPayload } from './payloadSchema'
 
-type SignedPayload = null | {
-  contact: string
-  encryptedValue: string
-  role: Choices
-  signature: string
-  timestamp: number
-}
+import { type Choices } from './RoleSelector'
 
 export function useInitiatePayload(
   contact: null | string,
@@ -16,7 +10,9 @@ export function useInitiatePayload(
   value: null | string
 ) {
   const [loading, setLoading] = useState(false)
-  const [signedPayload, setSignedPayload] = useState<SignedPayload>(null)
+  const [signedPayload, setSignedPayload] = useState<CompactPayload | null>(
+    null
+  )
 
   useEffect(() => {
     if (contact && role && value) {

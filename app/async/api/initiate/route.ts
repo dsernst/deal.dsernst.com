@@ -42,25 +42,25 @@ export async function POST(request: NextRequest) {
       'base64'
     )}:${encrypted}`
 
-    // Create payload
+    // Create compact payload
     const timestamp = Date.now()
-    const payload = {
-      encryptedValue,
-      role,
-      timestamp,
+    const compactPayload = {
+      ev: encryptedValue,
+      r: role === 'buyer' ? 'b' : 's',
+      t: timestamp,
     }
 
-    const payloadString = JSON.stringify(payload)
+    const payloadString = JSON.stringify(compactPayload)
     const signature = crypto
       .createHmac('sha256', SIGNING_KEY)
       .update(payloadString)
       .digest('base64')
 
-    // Return signed payload
+    // Return signed compact payload
     const signedPayload = {
-      ...payload,
-      contact, // Include contact info in response (will be in Share URL)
-      signature,
+      ...compactPayload,
+      c: contact, // Include contact info in response (will be in Share URL)
+      s: signature,
     }
 
     return NextResponse.json(signedPayload)

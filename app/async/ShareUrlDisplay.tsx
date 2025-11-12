@@ -1,16 +1,8 @@
 'use client'
 
-import { encodePayload } from './payloadUtils'
+import { type CompactPayload, encodePayload } from './payloadSchema'
 
-type SignedPayload = {
-  contact: string
-  encryptedValue: string
-  role: 'buyer' | 'seller'
-  signature: string
-  timestamp: number
-}
-
-export function ShareUrlDisplay({ payload }: { payload: SignedPayload }) {
+export function ShareUrlDisplay({ payload }: { payload: CompactPayload }) {
   const encoded = encodePayload(payload)
   const shareUrl = `${window.location.origin}/async?payload=${encoded}`
 
@@ -40,4 +32,3 @@ export function ShareUrlDisplay({ payload }: { payload: SignedPayload }) {
     </div>
   )
 }
-
