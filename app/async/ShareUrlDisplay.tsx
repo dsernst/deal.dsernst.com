@@ -1,5 +1,7 @@
 'use client'
 
+import { encodePayload } from './payloadUtils'
+
 type SignedPayload = {
   contact: string
   encryptedValue: string
@@ -9,9 +11,8 @@ type SignedPayload = {
 }
 
 export function ShareUrlDisplay({ payload }: { payload: SignedPayload }) {
-  const shareUrl = `${window.location.origin}/async?payload=${encodeURIComponent(
-    JSON.stringify(payload)
-  )}`
+  const encoded = encodePayload(payload)
+  const shareUrl = `${window.location.origin}/async?payload=${encoded}`
 
   return (
     <div className="flex flex-col items-center gap-4 max-w-2xl">
