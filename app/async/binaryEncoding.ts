@@ -12,52 +12,110 @@ export type PlaintextData = {
   v: string // value
 }
 
+const EPOCH_2025_MINUTES = Math.floor(
+  new Date('2025-01-01T00:00:00Z').getTime() / (60 * 1000)
+)
+
 // Compact binary encoding for plaintext payload
-// Format: [1 byte: role] [1 byte: contactLen] [contact] [4 bytes: timestamp] [1 byte: valueLen] [value]
-// Role: 0 = buyer, 1 = seller
+// Format: [1 byte: role bit + contactLen (7 bits)] [contact] [3 bytes: timestamp] [varint: value]
+// Role: bit 7 (0 = buyer, 1 = seller), contactLen: bits 0-6 (max 127 bytes)
+// Timestamp: minutes since 2025-01-01 00:00:00 UTC (3 bytes = ~32 years)
+// Value: varint-encoded number (1-4 bytes depending on size)
 // All integers are big-endian
 export function decodePlaintext(buffer: Buffer): PlaintextData {
   let offset = 0
 
-  const role = buffer[offset++] === 0 ? 'b' : 's'
-  const contactLen = buffer[offset++]
+  const firstByte = buffer[offset++]
+  const role: 'b' | 's' = (firstByte & 0x80) === 0 ? 'b' : 's'
+  const contactLen = firstByte & 0x7f
   const contact = buffer.subarray(offset, offset + contactLen).toString('utf8')
   offset += contactLen
-  const timestamp = buffer.readUInt32BE(offset)
-  offset += 4
-  const valueLen = buffer[offset++]
-  const value = buffer.subarray(offset, offset + valueLen).toString('utf8')
 
-  return { c: contact, r: role, t: timestamp, v: value }
+  // Timestamp: 3 bytes, minutes since 2025-01-01
+  const timestampMinutes = buffer.readUIntBE(offset, 3)
+  const timestamp = EPOCH_2025_MINUTES + timestampMinutes
+  offset += 3
+
+  // Value: varint
+  const valueOffset = { value: offset }
+  const valueNum = decodeVarint(buffer, valueOffset)
+  offset = valueOffset.value
+
+  return { c: contact, r: role, t: timestamp, v: valueNum.toString() }
 }
 
 export function encodePlaintext(data: PlaintextData): Buffer {
-  const role = data.r === 'b' ? 0 : 1
+  const roleBit = data.r === 's' ? 0x80 : 0
   const contactBytes = Buffer.from(data.c, 'utf8')
-  const valueBytes = Buffer.from(data.v, 'utf8')
+  const valueNum = parseInt(data.v, 10)
 
-  if (contactBytes.length > 255 || valueBytes.length > 255) {
-    throw new Error('Contact or value too long for binary encoding')
-  }
+  if (contactBytes.length > 127)
+    throw new Error('Contact too long (max 127 bytes)')
+
+  if (isNaN(valueNum) || valueNum < 0)
+    throw new Error('Value must be a non-negative number')
+
+  // Timestamp: minutes since 2025-01-01
+  const timestampMinutes = data.t - EPOCH_2025_MINUTES
+  if (timestampMinutes < 0 || timestampMinutes > 0xffffff)
+    throw new Error('Timestamp out of range')
+
+  const valueVarint = encodeVarint(valueNum)
 
   const buffer = Buffer.allocUnsafe(
-    1 + // role
-      1 + // contact length
+    1 + // role + contactLen
       contactBytes.length + // contact
-      4 + // timestamp (32-bit int)
-      1 + // value length
-      valueBytes.length // value
+      3 + // timestamp
+      valueVarint.length // value (varint)
   )
 
   let offset = 0
-  buffer[offset++] = role
-  buffer[offset++] = contactBytes.length
+  buffer[offset++] = roleBit | contactBytes.length
   contactBytes.copy(buffer, offset)
   offset += contactBytes.length
-  buffer.writeUInt32BE(data.t, offset)
-  offset += 4
-  buffer[offset++] = valueBytes.length
-  valueBytes.copy(buffer, offset)
+  buffer.writeUIntBE(timestampMinutes, offset, 3)
+  offset += 3
+  valueVarint.copy(buffer, offset)
 
   return buffer
+}
+
+function decodeVarint(buffer: Buffer, offset: { value: number }): number {
+  let value = 0
+  let shift = 0
+  let byte: number
+
+  do {
+    byte = buffer[offset.value++]
+    value |= (byte & 0x7f) << shift
+    shift += 7
+  } while (byte & 0x80)
+
+  return value
+}
+
+function encodeVarint(value: number): Buffer {
+  if (value < 0) throw new Error('Value must be non-negative')
+
+  // 1 byte
+  if (value < 128) return Buffer.from([value])
+
+  // 2 bytes
+  if (value < 16384) return Buffer.from([(value >> 8) | 0x80, value & 0xff])
+
+  // 3 bytes
+  if (value < 2097152)
+    return Buffer.from([
+      (value >> 16) | 0x80,
+      ((value >> 8) & 0xff) | 0x80,
+      value & 0xff,
+    ])
+
+  // 4 bytes
+  return Buffer.from([
+    (value >> 24) | 0x80,
+    ((value >> 16) & 0xff) | 0x80,
+    ((value >> 8) & 0xff) | 0x80,
+    value & 0xff,
+  ])
 }
