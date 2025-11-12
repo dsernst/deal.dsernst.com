@@ -2,15 +2,13 @@
 
 import { useState } from 'react'
 
-import { Calculation } from '../Calculation'
 import { description, title } from '../constants'
-import { ModeContainer } from '../ModeSwitcher'
-import { OneShotAgreement } from '../OneShotAgreement'
-import { PrivateInput } from '../PrivateInput'
+import { RoleSelector } from './RoleSelector'
 
-export type Inputs = [string, string]
+type Role = 'buyer' | 'seller' | null
+
 export function Content() {
-  const [[input1, input2], setValues] = useState<Inputs>(['', ''])
+  const [role, setRole] = useState<Role>(null)
 
   return (
     <div
@@ -20,18 +18,14 @@ export function Content() {
       <h1 className="text-4xl font-bold mb-1">{title}</h1>
       <p className="text-lg text-gray-400 mb-8">{description}</p>
 
-      {/* Private inputs */}
-      <PrivateInput {...{ inputs: [input1, input2], setValues }} />
-
-      {/* Results */}
-      <ModeContainer tabs={['Report Overlap Only', 'Pick Fair Price']}>
-        {({ ModeSwitcher, overlapOnly }) => (
-          <>
-            <Calculation {...{ input1, input2, overlapOnly }} />
-            <OneShotAgreement {...{ ModeSwitcher, overlapOnly }} />
-          </>
-        )}
-      </ModeContainer>
+      {!role ? (
+        <RoleSelector onSelect={setRole} />
+      ) : (
+        <div>
+          {/* TODO: Next steps for {role} */}
+          <p className="text-gray-400">Selected: {role}</p>
+        </div>
+      )}
 
       {/* Learn more */}
       <a
