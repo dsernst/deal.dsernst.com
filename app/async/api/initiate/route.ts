@@ -44,8 +44,8 @@ export async function POST(request: NextRequest) {
       'base64url'
     )}:${encryptedBuffer.toString('base64url')}`
 
-    // Create compact payload
-    const timestamp = Date.now()
+    // Create compact payload (timestamp in minutes since epoch)
+    const timestamp = Math.floor(Date.now() / (60 * 1000))
     const compactPayload = {
       ev: encryptedValue,
       r: role === 'buyer' ? 'b' : 's',
