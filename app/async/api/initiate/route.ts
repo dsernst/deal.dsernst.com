@@ -44,9 +44,9 @@ export async function POST(request: NextRequest) {
     const authTag = cipher.getAuthTag().slice(0, 12) // Truncate to 12 bytes (96 bits), still secure for short-lived payloads
     // Use base64url (no padding) for more compact encoding
     // Format: iv.authTag.encryptedData (using . as separator, URL-safe)
-    const encryptedValue = `${iv.toString('base64url')}.${authTag.toString(
-      'base64url'
-    )}.${encryptedBuffer.toString('base64url')}`
+    const encryptedValue = [iv, authTag, encryptedBuffer]
+      .map((b) => b.toString('base64url'))
+      .join('.')
 
     return NextResponse.json({ ev: encryptedValue })
   } catch (error) {
