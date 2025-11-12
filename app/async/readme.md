@@ -5,7 +5,16 @@ To achieve asynchronous multi-party computation,
 willing to add a server intermediary to make possible,  
 minimizing what the server stores.
 
-## Design:
+## Async MPC design summary:
+
+- Alice creates an encrypted payload and gets a signed Share URL
+- Bob uses the Share URL to submit his inputs
+- The server validates, decrypts, runs the MPC, and sends results to both parties
+- The server only stores a hash fingerprint of Alice's payload (with 24-hour expiration for our use case)
+
+The design enables async MPC with minimal server storage.
+
+## Details:
 
 1. Alice loads up MPCApp.com
 2. Alice uses app to construct encrypted payload A. The payload is encrypted for MPCApp.com's pub key.
