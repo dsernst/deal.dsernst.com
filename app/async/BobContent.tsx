@@ -8,6 +8,15 @@ import type { PlaintextData } from './binaryEncoding'
 import { description, title } from '../constants'
 import { BobSubmission } from './BobSubmission'
 import { Input } from './Input'
+import { ResultDisplay } from './ResultDisplay'
+
+type ValidateResponse =
+  | { error: string }
+  | {
+      r: 'b' | 's'
+      result?: { hasOverlap: boolean; result: null | number }
+      used: boolean
+    }
 
 export function BobContent() {
   const params = useParams()
@@ -16,6 +25,10 @@ export function BobContent() {
   const [bobValue, setBobValue] = useState<null | string>(null)
   const [error, setError] = useState<null | string>(null)
   const [loading, setLoading] = useState(true)
+  const [existingResult, setExistingResult] = useState<null | {
+    hasOverlap: boolean
+    result: null | number
+  }>(null)
 
   useEffect(() => {
     if (!payload) {
@@ -31,11 +44,15 @@ export function BobContent() {
       method: 'POST',
     })
       .then((res) => res.json())
-      .then((data) => {
-        if (data.error) {
+      .then((data: ValidateResponse) => {
+        if ('error' in data) {
           setError(data.error)
         } else {
-          setAliceData(data)
+          setAliceData({ r: data.r } as PlaintextData)
+          // If payload was already used and has results, show them
+          if (data.used && data.result) {
+            setExistingResult(data.result)
+          }
         }
         setLoading(false)
       })
@@ -82,7 +99,10 @@ export function BobContent() {
       <h1 className="text-4xl font-bold mb-1">{title}</h1>
       <p className="text-lg text-gray-400 mb-8">{description}</p>
 
-      {!bobValue ? (
+      {/* If results already exist (payload was used), show them immediately */}
+      {existingResult ? (
+        <ResultDisplay result={existingResult} />
+      ) : !bobValue ? (
         <div className="flex flex-col items-center gap-4">
           <p className="text-gray-400 text-center mb-4">
             You are the{' '}

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 
 import { decryptAndValidatePayload } from '../decryptPayload'
+import { getPayloadRecord } from '../payloadDb'
 
 export async function POST(request: NextRequest) {
   try {
@@ -17,9 +18,28 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Unexpected error' }, { status: 500 })
     }
 
+    // Check if payload has already been used
+    const record = getPayloadRecord(payload)
+    if (record?.used) {
+      // If results exist, return them so the page can display them
+      if (record.result) {
+        return NextResponse.json({
+          r: result.data.r,
+          result: record.result,
+          used: true,
+        })
+      }
+      // Otherwise, just indicate it's been used
+      return NextResponse.json(
+        { error: 'This payload has already been used' },
+        { status: 400 }
+      )
+    }
+
     // Return decrypted data (without sensitive info for client display)
     return NextResponse.json({
       r: result.data.r,
+      used: false,
       // Don't send contact or value to client - they'll be used server-side only
     })
   } catch (error) {

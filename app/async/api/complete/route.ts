@@ -1,11 +1,7 @@
-import crypto from 'crypto'
 import { NextRequest, NextResponse } from 'next/server'
 
 import { decryptAndValidatePayload } from '../decryptPayload'
-
-// TODO: Replace with actual database
-// For now, using in-memory Set (will be lost on restart)
-const usedPayloadHashes = new Set<string>()
+import { markPayloadAsUsed, storePayloadResult } from '../payloadDb'
 
 export async function POST(request: NextRequest) {
   try {
@@ -30,15 +26,12 @@ export async function POST(request: NextRequest) {
     const aliceData = decryptResult.data
 
     // Atomically check if payload has been used (hash-based)
-    const payloadHash = hashPayload(payload)
-    if (usedPayloadHashes.has(payloadHash))
+    const wasAlreadyUsed = !markPayloadAsUsed(payload)
+    if (wasAlreadyUsed)
       return NextResponse.json(
         { error: 'This payload has already been used' },
         { status: 400 }
       )
-
-    // Mark as used (atomic operation - in real DB this would be INSERT with unique constraint)
-    usedPayloadHashes.add(payloadHash)
 
     // Determine which value is seller min and which is buyer max
     const sellerMin =
@@ -48,6 +41,9 @@ export async function POST(request: NextRequest) {
 
     // Run MPC calculation
     const mpcResult = calculateMPC(sellerMin, buyerMax, overlapOnly)
+
+    // Store result in database so it can be retrieved later
+    storePayloadResult(payload, mpcResult)
 
     // TODO: Send email to Alice with results
     // await sendEmail(aliceData.c, { sellerMin, buyerMax, ...mpcResult })
@@ -81,8 +77,4 @@ function calculateMPC(
   const result = sellerMin + randomFactor * spread
 
   return { hasOverlap: true, result }
-}
-
-function hashPayload(payload: string): string {
-  return crypto.createHash('sha256').update(payload).digest('hex')
 }

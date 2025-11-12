@@ -1,0 +1,36 @@
+type MPCResult = {
+  hasOverlap: boolean
+  result: null | number
+}
+
+export function ResultDisplay({ result }: { result: MPCResult }) {
+  if (!result.hasOverlap) {
+    return (
+      <div className="flex flex-col items-center gap-4">
+        <p className="text-2xl">❌ No overlap, sorry</p>
+        <p className="text-gray-400 text-sm">
+          The seller&apos;s minimum is higher than the buyer&apos;s maximum.
+        </p>
+      </div>
+    )
+  }
+
+  if (result.result === null) {
+    return (
+      <div className="flex flex-col items-center gap-4">
+        <div className="text-2xl font-bold">✅ A deal is possible</div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="flex flex-col items-center gap-4">
+      <p className="text-gray-400">Fair price:</p>
+      <div className="text-4xl font-bold">${result.result.toFixed(2)}</div>
+      <p className="text-sm text-gray-400 text-center mt-4">
+        Both parties have been notified of this result.
+      </p>
+    </div>
+  )
+}
+
