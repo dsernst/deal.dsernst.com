@@ -3,14 +3,20 @@
 import { useState } from 'react'
 
 import { description, title } from '../constants'
+import { ContactInput } from './ContactInput'
 import { Input } from './Input'
 import { RoleSelector } from './RoleSelector'
+import { ShareUrlDisplay } from './ShareUrlDisplay'
+import { useInitiatePayload } from './useInitiatePayload'
 
 type Role = 'buyer' | 'seller' | null
 
 export function Content() {
+  const [contact, setContact] = useState<null | string>(null)
   const [role, setRole] = useState<Role>(null)
   const [value, setValue] = useState<null | string>(null)
+
+  const { loading, signedPayload } = useInitiatePayload(contact, role, value)
 
   return (
     <div
@@ -24,13 +30,14 @@ export function Content() {
         <RoleSelector onSelect={setRole} />
       ) : !value ? (
         <Input onSubmit={setValue} role={role} />
+      ) : !contact ? (
+        <ContactInput onSubmit={setContact} />
+      ) : loading ? (
+        <p className="text-gray-400">Creating your Share URL...</p>
+      ) : signedPayload ? (
+        <ShareUrlDisplay payload={signedPayload} />
       ) : (
-        <div>
-          {/* TODO: Next steps after Alice submits value */}
-          <p className="text-gray-400">
-            Role: {role}, Value: {value}
-          </p>
-        </div>
+        <p className="text-red-400">Error creating Share URL</p>
       )}
 
       {/* Learn more */}
