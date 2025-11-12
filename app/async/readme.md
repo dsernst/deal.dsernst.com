@@ -17,9 +17,9 @@ The design enables async MPC with minimal server storage.
 ## Details:
 
 1. Alice loads up MPCApp.com
-2. Alice uses app to construct encrypted payload A. The payload is encrypted for MPCApp.com's pub key.
-3. Alice POSTs payload to server, along with plaintext contact info for her.
-4. The server responds back with the same payload, but now also signed by the server, also including a timestamp. The server doesn't need to store anything yet.
+2. Alice uses app to construct her private input.
+3. Alice POSTs her plaintext input to server, along with plaintext contact info for her (eg. email address).
+4. The server encrypts Alice's input (using symmetric encryption for compact ciphertexts), signs the encrypted payload, and includes a timestamp. The server responds back with the encrypted+signed payload. The server doesn't need to store anything yet.
 5. Alice's client receives that new signed payload, and constructs an easy "Share URL" for her.
 6. Alice can paste this Share URL — which includes the full encrypted payload A and her plaintext contact info, and the timestamp, and the servers' signature — in a message to Bob, over any direct channel (email, signal, sms, telegram, whatever)
 7. Bob receives & clicks to open the Share URL: MPCApp.com/?payload=${JSON}
