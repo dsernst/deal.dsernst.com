@@ -34,13 +34,15 @@ export async function POST(request: NextRequest) {
     const iv = crypto.randomBytes(16)
     const cipher = crypto.createCipheriv('aes-256-gcm', ENCRYPTION_KEY, iv)
 
-    let encrypted = cipher.update(value, 'utf8', 'base64')
-    encrypted += cipher.final('base64')
-
+    const encryptedBuffer = Buffer.concat([
+      cipher.update(value, 'utf8'),
+      cipher.final(),
+    ])
     const authTag = cipher.getAuthTag()
-    const encryptedValue = `${iv.toString('base64')}:${authTag.toString(
-      'base64'
-    )}:${encrypted}`
+    // Use base64url (no padding) for more compact encoding
+    const encryptedValue = `${iv.toString('base64url')}:${authTag.toString(
+      'base64url'
+    )}:${encryptedBuffer.toString('base64url')}`
 
     // Create compact payload
     const timestamp = Date.now()
@@ -54,7 +56,7 @@ export async function POST(request: NextRequest) {
     const signature = crypto
       .createHmac('sha256', SIGNING_KEY)
       .update(payloadString)
-      .digest('base64')
+      .digest('base64url')
 
     // Return signed compact payload
     const signedPayload = {
