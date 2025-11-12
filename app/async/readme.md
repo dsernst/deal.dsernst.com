@@ -7,9 +7,10 @@ minimizing what the server stores.
 
 ## Async MPC design summary:
 
-- Alice creates an encrypted payload and gets a signed Share URL
+- Alice creates an encrypted payload and gets a Share URL
 - Bob uses the Share URL to submit his inputs
-- The server validates, decrypts, runs the MPC, and sends results to both parties
+- The server validates, decrypts, runs the MPC, and stores results
+- Both parties can view results by opening the Share URL
 - The server only stores a hash fingerprint of Alice's payload (with 24-hour expiration for our use case)
 
 The design enables async MPC with minimal server storage.
@@ -17,30 +18,30 @@ The design enables async MPC with minimal server storage.
 ## Details:
 
 1. Alice loads up MPCApp.com
-2. Alice uses app to construct her private input.
-3. Alice POSTs her plaintext input to server, along with plaintext contact info for her (eg. email address).
-4. The server encrypts Alice's input (using symmetric encryption for compact ciphertexts), signs the encrypted payload, and includes a timestamp. The server responds back with the encrypted+signed payload. The server doesn't need to store anything yet.
-5. Alice's client receives that new signed payload, and constructs an easy "Share URL" for her.
-6. Alice can paste this Share URL — which includes the full encrypted payload A and her plaintext contact info, and the timestamp, and the servers' signature — in a message to Bob, over any direct channel (email, signal, sms, telegram, whatever)
-7. Bob receives & clicks to open the Share URL: MPCApp.com/?payload=${JSON}
-8. Bob's client validates the signature, which includes asking the backend if this payload has been used already. Each initiating payload is only allowed a single usage! Basically the backend queries its local DB, if it has a record of already "resolving" this payload, which is coming in future step 12.
+2. Alice uses app to construct her private input (role and value).
+3. Alice POSTs her plaintext input to server.
+4. The server encrypts Alice's input (value, role, timestamp) using symmetric encryption (AES-256-CTR) for compact ciphertexts. The server responds back with the encrypted payload. The server doesn't need to store anything yet.
+5. Alice's client receives the encrypted payload and constructs a "Share URL" for her.
+6. Alice can paste this Share URL — which includes the full encrypted payload — in a message to Bob, over any direct channel (email, signal, sms, telegram, whatever)
+7. Bob receives & clicks to open the Share URL: MPCApp.com/b/[encrypted-payload]
+8. Bob's client validates the payload, which includes asking the backend if this payload has been used already. Each initiating payload is only allowed a single usage! The backend queries its local DB to check if it has a record of already "resolving" this payload, which is coming in future step 12.
 9. If the validation passes — it should iff it's legitimately unused — Bob's client now invites Bob to complete his side of the MPC by submitting his own inputs.
-10. Bob POSTs his own private inputs and the encrypted+signed payload from Alice to the backend.
+10. Bob POSTs his own private inputs and the encrypted payload from Alice to the backend.
 11. The backend now has Bob's inputs, and Alice's (via Bob), and atomically confirms Alice's payload is unused by attempting to insert a hash of it into the DB, with a unique constraint. If the insert succeeds (payload is unused), it proceeds to:
 12. - a. Decrypt Alice's payload.
     - b. Runs the pre-agreed-upon MPC logic over the two inputs.
-    - c. Sends Alice an email — using her contact info from the signed payload — with the MPC results.
+    - c. Stores the MPC results in the database.
     - d. Responds to Bob's POST with the result, so he can immediately see them too.
 
 ## Result:
 
 - MPC completed successfully!
-- Async! Alice sends initiation on her own, Bob has $expiration hours to respond.
-- Both parties get result, basically at the same time.
+- Async! Alice sends initiation on her own, Bob has 24 hours to respond.
+- Both parties can view results by opening the Share URL (results are stored and persist).
 - Neither party learns the others' input.
 - Server briefly sees the two private inputs, but never needs to store them, not even encrypted.
 - Server does need to store the hash fingerprint of Alice's payload.
-  - For our particular use-case — "Fair" Negotiating https://deal.dsernst.com — we can set initiators' payloads to "expire" if unresponded to within 24 hours. The server can stateless-ly enforce this by checking the signed payload timestamp, allowing the DB to safely purge any hashes more than 24 hours old, since those will be rejected by outdated timestamps. So low DB size requirements— just the 1 day's worth of resolved-fingerprints.
+  - For our particular use-case — "Fair" Negotiating https://deal.dsernst.com — we can set initiators' payloads to "expire" if unresponded to within 24 hours. The server can stateless-ly enforce this by checking the encrypted payload timestamp, allowing the DB to safely purge any hashes more than 24 hours old, since those will be rejected by outdated timestamps. So low DB size requirements— just the 1 day's worth of resolved-fingerprints.
 
 ## Security Considerations:
 
@@ -50,6 +51,6 @@ The design enables async MPC with minimal server storage.
 
 **Error Handling:**
 
-- **Failed email delivery:** If Alice's email fails to send, she won't receive results via email, but this can be handled with retry mechanisms or alternative notification methods if it becomes an issue.
 - **Failed POST requests:** Bob's client can show an error and invite retry if his POST fails.
 - **Server crashes mid-computation:** If the server crashes between steps 12a and 12d, Bob would see an error and can retry. Bob still wouldn't learn Alice's inputs, so the failure mode is relatively safe.
+- **Expired payloads:** Payloads expire after 24 hours. If Bob tries to use an expired payload, he'll see an error message.
