@@ -41,3 +41,13 @@ The design enables async MPC with minimal server storage.
 - Server briefly sees the two private inputs, but never needs to store them, not even encrypted.
 - Server does need to store the hash fingerprint of Alice's payload.
   - For our particular use-case — "Fair" Negotiating https://deal.dsernst.com — we can set initiators' payloads to "expire" if unresponded to within 24 hours. The server can stateless-ly enforce this by checking the signed payload timestamp, allowing the DB to safely purge any hashes more than 24 hours old, since those will be rejected by outdated timestamps. So low DB size requirements— just the 1 day's worth of resolved-fingerprints.
+
+## Security Considerations:
+
+**Replay/Interception Attacks:** If Eve intercepts the Share URL and uses it before Bob, Alice would receive results computed with Eve's inputs instead of Bob's. When Alice and Bob communicate, they would quickly discover the mismatch and ignore the incorrect results. This is acceptable for our use case, as the parties can detect and handle such scenarios through their direct communication channel.
+
+**Error Handling:**
+
+- **Failed email delivery:** If Alice's email fails to send, she won't receive results via email, but this can be handled with retry mechanisms or alternative notification methods if it becomes an issue.
+- **Failed POST requests:** Bob's client can show an error and invite retry if his POST fails.
+- **Server crashes mid-computation:** If the server crashes between steps 12a and 12d, Bob would see an error and can retry. Bob still wouldn't learn Alice's inputs, so the failure mode is relatively safe.
