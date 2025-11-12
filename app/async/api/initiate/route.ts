@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
       v: value,
     })
 
-    const iv = crypto.randomBytes(16)
+    const iv = crypto.randomBytes(12)
     const cipher = crypto.createCipheriv('aes-256-gcm', ENCRYPTION_KEY, iv)
 
     const encryptedBuffer = Buffer.concat([
