@@ -45,9 +45,6 @@ export async function POST(request: NextRequest) {
     // Store result in database so it can be retrieved later
     storePayloadResult(payload, mpcResult)
 
-    // TODO: Send email to Alice with results
-    // await sendEmail(aliceData.c, { sellerMin, buyerMax, ...mpcResult })
-
     // Return result to Bob
     return NextResponse.json({
       hasOverlap: mpcResult.hasOverlap,

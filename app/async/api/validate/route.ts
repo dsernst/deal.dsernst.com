@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       r: result.data.r,
       used: false,
-      // Don't send contact or value to client - they'll be used server-side only
+      // Don't send value to client - it'll be used server-side only
     })
   } catch (error) {
     console.error('Error validating payload:', error)

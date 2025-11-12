@@ -28,9 +28,8 @@ export function ResultDisplay({ result }: { result: MPCResult }) {
       <p className="text-gray-400">Fair price:</p>
       <div className="text-4xl font-bold">${result.result.toFixed(2)}</div>
       <p className="text-sm text-gray-400 text-center mt-4">
-        Both parties have been notified of this result.
+        Tell the sender to open the link to see the deal!
       </p>
     </div>
   )
 }
-

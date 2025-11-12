@@ -13,11 +13,11 @@ const ENCRYPTION_KEY = Buffer.from(process.env.ENCRYPTION_KEY, 'base64')
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { contact, role, value } = body
+    const { role, value } = body
 
-    if (!contact || !role || value === undefined)
+    if (!role || value === undefined)
       return NextResponse.json(
-        { error: 'Missing required fields: contact, role, value' },
+        { error: 'Missing required fields: role, value' },
         { status: 400 }
       )
 
@@ -27,10 +27,8 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       )
 
-    // Encrypt everything together: value, contact, timestamp, role
-    // This keeps contact info private and GCM auth tag provides authentication
+    // Encrypt everything together: value, timestamp, role
     const plaintextBuffer = encodePlaintext({
-      c: contact,
       r: role === 'buyer' ? 'b' : 's',
       t: Math.floor(Date.now() / (60 * 1000)),
       v: value,

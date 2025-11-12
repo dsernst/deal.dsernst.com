@@ -4,21 +4,17 @@ import type { CompactPayload } from './binaryEncoding'
 
 import { type Choices } from './RoleSelector'
 
-export function useInitiatePayload(
-  contact: null | string,
-  role: Choices | null,
-  value: null | string
-) {
+export function useInitiatePayload(role: Choices | null, value: null | string) {
   const [loading, setLoading] = useState(false)
   const [signedPayload, setSignedPayload] = useState<CompactPayload | null>(
     null
   )
 
   useEffect(() => {
-    if (contact && role && value) {
+    if (role && value) {
       setLoading(true)
       fetch('/async/api/initiate', {
-        body: JSON.stringify({ contact, role, value }),
+        body: JSON.stringify({ role, value }),
         headers: { 'Content-Type': 'application/json' },
         method: 'POST',
       })
@@ -32,7 +28,7 @@ export function useInitiatePayload(
           setLoading(false)
         })
     }
-  }, [contact, role, value])
+  }, [role, value])
 
   return { loading, signedPayload }
 }

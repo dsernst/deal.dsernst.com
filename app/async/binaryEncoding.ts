@@ -1,12 +1,11 @@
 // Compact payload schema - just the encrypted value
-// Everything (value, contact, timestamp, role) is encrypted together
+// Everything (value, timestamp, role) is encrypted together
 // Format: iv.encryptedData (all base64url, . as separator)
 export type CompactPayload = {
   ev: string // encryptedValue containing encrypted PlaintextData
 }
 
 export type PlaintextData = {
-  c: string // contact email address
   r: 'b' | 's' // role: b=buyer, s=seller
   t: number // timestamp (minutes since epoch)
   v: string // value
@@ -17,19 +16,16 @@ const EPOCH_2025_MINUTES = Math.floor(
 )
 
 // Compact binary encoding for plaintext payload
-// Format: [1 byte: role bit + contactLen (7 bits)] [contact] [3 bytes: timestamp] [varint: value]
-// Role: bit 7 (0 = buyer, 1 = seller), contactLen: bits 0-6 (max 127 bytes)
+// Format: [1 byte: role] [3 bytes: timestamp] [varint: value]
+// Role: 0 = buyer, 1 = seller
 // Timestamp: minutes since 2025-01-01 00:00:00 UTC (3 bytes = ~32 years)
 // Value: varint-encoded number (1-4 bytes depending on size)
 // All integers are big-endian
 export function decodePlaintext(buffer: Buffer): PlaintextData {
   let offset = 0
 
-  const firstByte = buffer[offset++]
-  const role: 'b' | 's' = (firstByte & 0x80) === 0 ? 'b' : 's'
-  const contactLen = firstByte & 0x7f
-  const contact = buffer.subarray(offset, offset + contactLen).toString('utf8')
-  offset += contactLen
+  const roleByte = buffer[offset++]
+  const role: 'b' | 's' = roleByte === 0 ? 'b' : 's'
 
   // Timestamp: 3 bytes, minutes since 2025-01-01
   const timestampMinutes = buffer.readUIntBE(offset, 3)
@@ -41,16 +37,12 @@ export function decodePlaintext(buffer: Buffer): PlaintextData {
   const valueNum = decodeVarint(buffer, valueOffset)
   offset = valueOffset.value
 
-  return { c: contact, r: role, t: timestamp, v: valueNum.toString() }
+  return { r: role, t: timestamp, v: valueNum.toString() }
 }
 
 export function encodePlaintext(data: PlaintextData): Buffer {
-  const roleBit = data.r === 's' ? 0x80 : 0
-  const contactBytes = Buffer.from(data.c, 'utf8')
+  const roleByte = data.r === 's' ? 1 : 0
   const valueNum = parseInt(data.v, 10)
-
-  if (contactBytes.length > 127)
-    throw new Error('Contact too long (max 127 bytes)')
 
   if (isNaN(valueNum) || valueNum < 0)
     throw new Error('Value must be a non-negative number')
@@ -63,16 +55,13 @@ export function encodePlaintext(data: PlaintextData): Buffer {
   const valueVarint = encodeVarint(valueNum)
 
   const buffer = Buffer.allocUnsafe(
-    1 + // role + contactLen
-      contactBytes.length + // contact
+    1 + // role
       3 + // timestamp
       valueVarint.length // value (varint)
   )
 
   let offset = 0
-  buffer[offset++] = roleBit | contactBytes.length
-  contactBytes.copy(buffer, offset)
-  offset += contactBytes.length
+  buffer[offset++] = roleByte
   buffer.writeUIntBE(timestampMinutes, offset, 3)
   offset += 3
   valueVarint.copy(buffer, offset)
