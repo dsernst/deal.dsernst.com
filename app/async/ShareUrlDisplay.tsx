@@ -4,7 +4,7 @@ import { type CompactPayload, encodePayload } from './payloadSchema'
 
 export function ShareUrlDisplay({ payload }: { payload: CompactPayload }) {
   const encoded = encodePayload(payload)
-  const shareUrl = `${window.location.origin}/async?payload=${encoded}`
+  const shareUrl = `${window.location.origin}/b/${encoded}`
 
   return (
     <div className="flex flex-col items-center gap-4 max-w-2xl">
