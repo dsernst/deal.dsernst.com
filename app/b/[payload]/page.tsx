@@ -1,1 +1,1 @@
-export { Content as default } from '../../async/AsyncContent'
+export { BobContent as default } from '../../async/BobContent'
