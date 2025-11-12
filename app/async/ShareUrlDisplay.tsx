@@ -1,10 +1,10 @@
 'use client'
 
-import { type CompactPayload, encodePayload } from './payloadSchema'
+import type { CompactPayload } from './payloadSchema'
 
 export function ShareUrlDisplay({ payload }: { payload: CompactPayload }) {
-  const encoded = encodePayload(payload)
-  const shareUrl = `${window.location.origin}/b/${encoded}`
+  // Payload is just {ev: "encryptedValue"}, so use the encrypted value directly
+  const shareUrl = `${window.location.origin}/b/${payload.ev}`
 
   return (
     <div className="flex flex-col items-center gap-4 max-w-2xl">
