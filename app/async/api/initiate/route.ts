@@ -1,39 +1,34 @@
 import crypto from 'crypto'
 import { NextRequest, NextResponse } from 'next/server'
 
-// TODO: Store encryption key securely (environment variable)
-// For now, using a placeholder - in production, this should be from env vars
-// If from env var, it should be base64 encoded
-function getKey(envKey: string | undefined, defaultKey: Buffer): Buffer {
-  if (envKey) return Buffer.from(envKey, 'base64')
+if (!process.env.ENCRYPTION_KEY) throw new Error('ENCRYPTION_KEY must be set')
+if (!process.env.SIGNING_KEY) throw new Error('SIGNING_KEY must be set')
 
-  return defaultKey
-}
+const ENCRYPTION_KEY = Buffer.from(process.env.ENCRYPTION_KEY, 'base64')
+const SIGNING_KEY = Buffer.from(process.env.SIGNING_KEY, 'base64')
 
-const ENCRYPTION_KEY = getKey(
-  process.env.ENCRYPTION_KEY,
-  crypto.randomBytes(32)
-)
-const SIGNING_KEY = getKey(process.env.SIGNING_KEY, crypto.randomBytes(32))
+// Uncomment to print new random keys to console
+// console.log(`
+//   ENCRYPTION_KEY=${crypto.randomBytes(32).toString('base64')},
+//   SIGNING_KEY=${crypto.randomBytes(32).toString('base64')}
+// `)
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
     const { contact, role, value } = body
 
-    if (!contact || !role || value === undefined) {
+    if (!contact || !role || value === undefined)
       return NextResponse.json(
         { error: 'Missing required fields: contact, role, value' },
         { status: 400 }
       )
-    }
 
-    if (role !== 'buyer' && role !== 'seller') {
+    if (role !== 'buyer' && role !== 'seller')
       return NextResponse.json(
         { error: 'Invalid role. Must be "buyer" or "seller"' },
         { status: 400 }
       )
-    }
 
     // Encrypt Alice's value
     const iv = crypto.randomBytes(16)
