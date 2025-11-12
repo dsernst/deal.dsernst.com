@@ -46,6 +46,8 @@ The design enables async MPC with minimal server storage.
 
 **Replay/Interception Attacks:** If Eve intercepts the Share URL and uses it before Bob, Alice would receive results computed with Eve's inputs instead of Bob's. When Alice and Bob communicate, they would quickly discover the mismatch and ignore the incorrect results. This is acceptable for our use case, as the parties can detect and handle such scenarios through their direct communication channel.
 
+**Malicious Server:** As an intermediary, the server briefly sees both inputs during step 12. A malicious server could store those inputs for much longer than intended, and could also intentionally mis-calculate the MPC results. Whether such mis-calculation would be detectable by Alice and Bob depends on the specific MPC protocol being used. This design requires trusting the server to follow the protocol correctly and not retain inputs beyond the computation.
+
 **Error Handling:**
 
 - **Failed email delivery:** If Alice's email fails to send, she won't receive results via email, but this can be handled with retry mechanisms or alternative notification methods if it becomes an issue.
