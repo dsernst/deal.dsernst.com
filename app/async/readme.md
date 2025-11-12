@@ -26,12 +26,11 @@ The design enables async MPC with minimal server storage.
 8. Bob's client validates the signature, which includes asking the backend if this payload has been used already. Each initiating payload is only allowed a single usage! Basically the backend queries its local DB, if it has a record of already "resolving" this payload, which is coming in future step 12.
 9. If the validation passes — it should iff it's legitimately unused — Bob's client now invites Bob to complete his side of the MPC by submitting his own inputs.
 10. Bob POSTs his own private inputs and the encrypted+signed payload from Alice to the backend.
-11. The backend now has Bob's inputs, and Alice's (via Bob), and confirms again Alice's is unused. If so, it proceeds to:
+11. The backend now has Bob's inputs, and Alice's (via Bob), and atomically confirms Alice's payload is unused by attempting to insert a hash of it into the DB, with a unique constraint. If the insert succeeds (payload is unused), it proceeds to:
 12. - a. Decrypt Alice's payload.
-    - b. Records in the DB that Alice's payload is now being decrypted— store a hash of it? Easy to check again later, without needing to actually keep the private data itself.
-    - c. Runs the pre-agreed-upon MPC logic over the two inputs.
-    - d. Sends Alice an email — using her contact info from the signed payload — with the MPC results.
-    - e. Responds to Bob's POST with the result, so he can immediately see them too.
+    - b. Runs the pre-agreed-upon MPC logic over the two inputs.
+    - c. Sends Alice an email — using her contact info from the signed payload — with the MPC results.
+    - d. Responds to Bob's POST with the result, so he can immediately see them too.
 
 ## Result:
 
