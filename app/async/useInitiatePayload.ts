@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-import type { CompactPayload } from './payloadSchema'
+import type { CompactPayload } from './binaryEncoding'
 
 import { type Choices } from './RoleSelector'
 

@@ -1,6 +1,6 @@
 'use client'
 
-import type { CompactPayload } from './payloadSchema'
+import type { CompactPayload } from './binaryEncoding'
 
 export function ShareUrlDisplay({ payload }: { payload: CompactPayload }) {
   // Payload is just {ev: "encryptedValue"}, so use the encrypted value directly

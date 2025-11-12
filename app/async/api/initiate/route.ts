@@ -1,6 +1,8 @@
 import crypto from 'crypto'
 import { NextRequest, NextResponse } from 'next/server'
 
+import { encodePlaintext } from '../../binaryEncoding'
+
 if (!process.env.ENCRYPTION_KEY) throw new Error('ENCRYPTION_KEY must be set')
 
 const ENCRYPTION_KEY = Buffer.from(process.env.ENCRYPTION_KEY, 'base64')
@@ -27,7 +29,7 @@ export async function POST(request: NextRequest) {
 
     // Encrypt everything together: value, contact, timestamp, role
     // This keeps contact info private and GCM auth tag provides authentication
-    const plaintext = JSON.stringify({
+    const plaintextBuffer = encodePlaintext({
       c: contact,
       r: role === 'buyer' ? 'b' : 's',
       t: Math.floor(Date.now() / (60 * 1000)),
@@ -38,7 +40,7 @@ export async function POST(request: NextRequest) {
     const cipher = crypto.createCipheriv('aes-256-gcm', ENCRYPTION_KEY, iv)
 
     const encryptedBuffer = Buffer.concat([
-      cipher.update(plaintext, 'utf8'),
+      cipher.update(plaintextBuffer),
       cipher.final(),
     ])
     const authTag = cipher.getAuthTag().slice(0, 12) // Truncate to 12 bytes (96 bits), still secure for short-lived payloads
