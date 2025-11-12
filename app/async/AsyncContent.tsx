@@ -3,12 +3,14 @@
 import { useState } from 'react'
 
 import { description, title } from '../constants'
+import { Input } from './Input'
 import { RoleSelector } from './RoleSelector'
 
 type Role = 'buyer' | 'seller' | null
 
 export function Content() {
   const [role, setRole] = useState<Role>(null)
+  const [value, setValue] = useState<null | string>(null)
 
   return (
     <div
@@ -20,10 +22,14 @@ export function Content() {
 
       {!role ? (
         <RoleSelector onSelect={setRole} />
+      ) : !value ? (
+        <Input onSubmit={setValue} role={role} />
       ) : (
         <div>
-          {/* TODO: Next steps for {role} */}
-          <p className="text-gray-400">Selected: {role}</p>
+          {/* TODO: Next steps after Alice submits value */}
+          <p className="text-gray-400">
+            Role: {role}, Value: {value}
+          </p>
         </div>
       )}
 

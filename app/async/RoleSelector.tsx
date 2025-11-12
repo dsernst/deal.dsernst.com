@@ -1,10 +1,10 @@
 'use client'
 
-const roles = [
+export const roles = [
   ['Buyer', 'Max Offer'],
   ['Seller', 'Min Price'],
 ] as const
-type Choices = 'buyer' | 'seller'
+export type Choices = 'buyer' | 'seller'
 
 export function RoleSelector({
   onSelect,
