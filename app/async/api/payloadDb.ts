@@ -37,7 +37,9 @@ export async function getPayloadRecord(
 }
 
 export function hashPayload(payload: string): string {
-  return crypto.createHash('sha256').update(payload).digest('hex')
+  // Truncate SHA256 to 8 bytes (16 hex chars) = 64 bits of entropy
+  // 2^32 birthday collision threshold is more than sufficient for this use case
+  return crypto.createHash('sha256').update(payload).digest('hex').slice(0, 16)
 }
 
 export async function markPayloadAsUsed(
