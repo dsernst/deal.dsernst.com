@@ -1,7 +1,7 @@
 import crypto from 'crypto'
 
-// TODO: Replace with actual database
-// For now, using in-memory Map (will be lost on restart)
+import { getDb, initDb } from './db'
+
 type MPCResult = {
   hasOverlap: boolean
   result: null | number
@@ -9,35 +9,70 @@ type MPCResult = {
 
 type PayloadRecord = {
   result: MPCResult | null
-  used: boolean
 }
 
-const payloadDb = new Map<string, PayloadRecord>()
+// Initialize database on module load
+let dbInitialized = false
+const initPromise = initDb().then(() => (dbInitialized = true))
 
-export function getPayloadRecord(payload: string): null | PayloadRecord {
+export async function getPayloadRecord(
+  payload: string
+): Promise<null | PayloadRecord> {
+  if (!dbInitialized) await initPromise
+
   const hash = hashPayload(payload)
-  return payloadDb.get(hash) || null
+  const db = getDb()
+
+  const result = await db.execute({
+    args: [hash],
+    sql: 'SELECT result FROM payloads WHERE payload_hash = ?',
+  })
+
+  if (result.rows.length === 0) return null
+
+  const row = result.rows[0]
+  const resultJson = row.result as null | string
+
+  return { result: resultJson ? JSON.parse(resultJson) : null }
 }
 
 export function hashPayload(payload: string): string {
   return crypto.createHash('sha256').update(payload).digest('hex')
 }
 
-export function markPayloadAsUsed(payload: string): boolean {
-  const hash = hashPayload(payload)
-  const existing = payloadDb.get(hash)
-  if (existing?.used) return false // Already used
+export async function markPayloadAsUsed(
+  payload: string
+): Promise<{ wasAlreadyUsed: boolean }> {
+  if (!dbInitialized) await initPromise
 
-  // Mark as used (atomic operation - in real DB this would be INSERT with unique constraint)
-  payloadDb.set(hash, { result: existing?.result || null, used: true })
-  return true
+  const hash = hashPayload(payload)
+  const db = getDb()
+
+  // Try to atomically insert the record
+  // If it already exists (PRIMARY KEY constraint), INSERT OR IGNORE will silently skip it
+  const insertResult = await db.execute({
+    args: [hash],
+    sql: 'INSERT OR IGNORE INTO payloads (payload_hash) VALUES (?)',
+  })
+
+  // If rowsAffected = 0, the record already existed (was already used)
+  // If rowsAffected > 0, we successfully inserted (was not already used)
+  return { wasAlreadyUsed: insertResult.rowsAffected === 0 }
 }
 
-export function storePayloadResult(payload: string, result: MPCResult): void {
+export async function storePayloadResult(
+  payload: string,
+  result: MPCResult
+): Promise<void> {
+  if (!dbInitialized) await initPromise
+
   const hash = hashPayload(payload)
-  const existing = payloadDb.get(hash)
-  payloadDb.set(hash, {
-    result,
-    used: existing?.used || false,
+  const db = getDb()
+  const resultJson = JSON.stringify(result)
+
+  // Use INSERT OR REPLACE to handle both new and existing records
+  await db.execute({
+    args: [hash, resultJson, resultJson],
+    sql: 'INSERT INTO payloads (payload_hash, result) VALUES (?, ?) ON CONFLICT(payload_hash) DO UPDATE SET result = ?',
   })
 }

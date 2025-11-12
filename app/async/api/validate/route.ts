@@ -18,9 +18,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Unexpected error' }, { status: 500 })
     }
 
-    // Check if payload has already been used
-    const record = getPayloadRecord(payload)
-    if (record?.used) {
+    // Check if payload has already been used (if record exists, it's been used)
+    const record = await getPayloadRecord(payload)
+    if (record) {
       // If results exist, return them so the page can display them
       if (record.result) {
         return NextResponse.json({

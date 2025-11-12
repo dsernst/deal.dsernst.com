@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
     const aliceData = decryptResult.data
 
     // Atomically check if payload has been used (hash-based)
-    const wasAlreadyUsed = !markPayloadAsUsed(payload)
+    const { wasAlreadyUsed } = await markPayloadAsUsed(payload)
     if (wasAlreadyUsed)
       return NextResponse.json(
         { error: 'This payload has already been used' },
@@ -43,7 +43,7 @@ export async function POST(request: NextRequest) {
     const mpcResult = calculateMPC(sellerMin, buyerMax, overlapOnly)
 
     // Store result in database so it can be retrieved later
-    storePayloadResult(payload, mpcResult)
+    await storePayloadResult(payload, mpcResult)
 
     // Return result to Bob
     return NextResponse.json({
