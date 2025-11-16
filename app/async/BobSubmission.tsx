@@ -6,11 +6,11 @@ import { ResultDisplay } from './ResultDisplay'
 
 export function BobSubmission({
   alicePayload,
-  bobValue,
+  bobsValue,
   onError,
 }: {
   alicePayload: string
-  bobValue: string
+  bobsValue: string
   onError: (error: string) => void
 }) {
   const [loading, setLoading] = useState(true)
@@ -27,7 +27,7 @@ export function BobSubmission({
 
     fetch('/async/api/complete', {
       body: JSON.stringify({
-        bobValue,
+        bobsValue,
         overlapOnly: false,
         payload: alicePayload,
       }),
@@ -47,15 +47,11 @@ export function BobSubmission({
         onError('Failed to complete negotiation')
         setLoading(false)
       })
-  }, [alicePayload, bobValue, onError])
+  }, [alicePayload, bobsValue, onError])
 
-  if (loading) {
-    return <p className="text-gray-400">Computing result...</p>
-  }
+  if (loading) return <p className="text-gray-400">Computing result...</p>
 
-  if (!result) {
-    return null
-  }
+  if (!result) return null
 
   return <ResultDisplay result={result} />
 }

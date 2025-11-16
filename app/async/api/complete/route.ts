@@ -6,11 +6,11 @@ import { markPayloadAsUsed, storePayloadResult } from '../payloadDb'
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { bobValue, overlapOnly = false, payload } = body
+    const { bobsValue, overlapOnly = false, payload } = body
 
-    if (!payload || !bobValue)
+    if (!payload || !bobsValue)
       return NextResponse.json(
-        { error: 'Missing required fields: payload, bobValue' },
+        { error: 'Missing required fields: payload, bobsValue' },
         { status: 400 }
       )
 
@@ -35,9 +35,9 @@ export async function POST(request: NextRequest) {
 
     // Determine which value is seller min and which is buyer max
     const sellerMin =
-      aliceData.r === 's' ? Number(aliceData.v) : Number(bobValue)
+      aliceData.r === 's' ? Number(aliceData.v) : Number(bobsValue)
     const buyerMax =
-      aliceData.r === 'b' ? Number(aliceData.v) : Number(bobValue)
+      aliceData.r === 'b' ? Number(aliceData.v) : Number(bobsValue)
 
     // Run MPC calculation
     const mpcResult = calculateMPC(sellerMin, buyerMax, overlapOnly)
