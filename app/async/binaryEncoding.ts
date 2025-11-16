@@ -22,12 +22,20 @@ const EPOCH_2025_MINUTES = Math.floor(
 // Value: varint-encoded number (1-4 bytes depending on size)
 // All integers are big-endian
 export function decodePlaintext(buffer: Buffer): PlaintextData {
+  // Minimum buffer size: 1 (role) + 3 (timestamp) + 1 (minimum varint) = 5 bytes
+  if (buffer.length < 5) {
+    throw new Error('Buffer too short: expected at least 5 bytes')
+  }
+
   let offset = 0
 
   const roleByte = buffer[offset++]
   const role: 'b' | 's' = roleByte === 0 ? 'b' : 's'
 
   // Timestamp: 3 bytes, minutes since 2025-01-01
+  if (offset + 3 > buffer.length) {
+    throw new Error('Buffer too short: cannot read timestamp')
+  }
   const timestampMinutes = buffer.readUIntBE(offset, 3)
   const timestamp = EPOCH_2025_MINUTES + timestampMinutes
   offset += 3
@@ -73,8 +81,26 @@ function decodeVarint(buffer: Buffer, offset: { value: number }): number {
   let value = 0
   let shift = 0
   let byte: number
+  const maxBytes = 4 // Maximum varint size (as per encodeVarint)
+  const startOffset = offset.value
 
   do {
+    // Check bounds before reading
+    if (offset.value >= buffer.length) {
+      throw new Error(
+        `Buffer overflow: reading varint at offset ${startOffset}, buffer length ${buffer.length}`
+      )
+    }
+
+    // Enforce maximum varint length (4 bytes)
+    if (offset.value - startOffset >= maxBytes) {
+      throw new Error(
+        `Varint too long: maximum ${maxBytes} bytes, read ${
+          offset.value - startOffset
+        } bytes`
+      )
+    }
+
     byte = buffer[offset.value++]
     value |= (byte & 0x7f) << shift
     shift += 7
@@ -86,25 +112,33 @@ function decodeVarint(buffer: Buffer, offset: { value: number }): number {
 function encodeVarint(value: number): Buffer {
   if (value < 0) throw new Error('Value must be non-negative')
 
-  // 1 byte
+  // Varint encoding: each byte contains 7 bits of data + 1 continuation bit
+  // Low bits come first, high bits come last
+  // Continuation bit (0x80) is set on all bytes except the last
+
+  // 1 byte (0-127)
   if (value < 128) return Buffer.from([value])
 
-  // 2 bytes
-  if (value < 16384) return Buffer.from([(value >> 8) | 0x80, value & 0xff])
-
-  // 3 bytes
-  if (value < 2097152)
+  // 2 bytes (128-16383)
+  if (value < 16384)
     return Buffer.from([
-      (value >> 16) | 0x80,
-      ((value >> 8) & 0xff) | 0x80,
-      value & 0xff,
+      (value & 0x7f) | 0x80, // low 7 bits with continuation
+      (value >> 7) & 0x7f, // high 7 bits without continuation
     ])
 
-  // 4 bytes
+  // 3 bytes (16384-2097151)
+  if (value < 2097152)
+    return Buffer.from([
+      (value & 0x7f) | 0x80, // bits 0-6 with continuation
+      ((value >> 7) & 0x7f) | 0x80, // bits 7-13 with continuation
+      (value >> 14) & 0x7f, // bits 14-20 without continuation
+    ])
+
+  // 4 bytes (2097152+)
   return Buffer.from([
-    (value >> 24) | 0x80,
-    ((value >> 16) & 0xff) | 0x80,
-    ((value >> 8) & 0xff) | 0x80,
-    value & 0xff,
+    (value & 0x7f) | 0x80, // bits 0-6 with continuation
+    ((value >> 7) & 0x7f) | 0x80, // bits 7-13 with continuation
+    ((value >> 14) & 0x7f) | 0x80, // bits 14-20 with continuation
+    (value >> 21) & 0x7f, // bits 21-27 without continuation
   ])
 }
