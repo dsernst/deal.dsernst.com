@@ -40,6 +40,8 @@ export function Content() {
 
       {/* Learn more */}
       <LearnMoreLink />
+
+      {/* Switch to local-device mode */}
       {!signedPayload && (
         <Link
           className="text-sm text-gray-400 mt-1 block hover:underline"
