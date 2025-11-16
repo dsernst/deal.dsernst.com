@@ -1,10 +1,12 @@
 'use client'
 
+import { useState } from 'react'
+
 import type { CompactPayload } from './binaryEncoding'
 
 export function ShareUrlDisplay({ payload }: { payload: CompactPayload }) {
-  // Payload is just {ev: "encryptedValue"}, so use the encrypted value directly
   const shareUrl = `${window.location.origin}/b/${payload.ev}`
+  const [copied, setCopied] = useState(false)
 
   return (
     <div className="flex flex-col items-center gap-4 max-w-2xl">
@@ -20,9 +22,10 @@ export function ShareUrlDisplay({ payload }: { payload: CompactPayload }) {
           className="px-4 py-2 border border-blue-500 text-blue-500 rounded-md cursor-pointer hover:bg-blue-500/10 active:bg-blue-500/20"
           onClick={() => {
             navigator.clipboard.writeText(shareUrl)
+            setCopied(true)
           }}
         >
-          Copy
+          {!copied ? 'Copy' : 'Copied!'}
         </button>
       </div>
       <p className="text-sm text-gray-400 text-center">
