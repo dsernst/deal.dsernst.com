@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { useState } from 'react'
 
 import { Calculation } from './Calculation'
@@ -36,6 +37,12 @@ export function Content() {
 
       {/* Learn more */}
       <LearnMoreLink />
+      <Link
+        className="text-sm text-gray-400 mt-1 block hover:underline"
+        href="/async"
+      >
+        Switch to async mode
+      </Link>
     </div>
   )
 }

@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { useState } from 'react'
 
 import { description, title } from '../constants'
@@ -39,6 +40,12 @@ export function Content() {
 
       {/* Learn more */}
       <LearnMoreLink />
+      <Link
+        className="text-sm text-gray-400 mt-1 block hover:underline"
+        href="/"
+      >
+        Switch to local-device mode
+      </Link>
     </div>
   )
 }
