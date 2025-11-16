@@ -4,7 +4,6 @@ import Link from 'next/link'
 import { useState } from 'react'
 
 import { Calculation } from './Calculation'
-import { description, title } from './constants'
 import { LearnMoreLink } from './LearnMoreLink'
 import { ModeContainer } from './ModeSwitcher'
 import { OneShotAgreement } from './OneShotAgreement'
@@ -15,13 +14,7 @@ export function Content() {
   const [[input1, input2], setValues] = useState<Inputs>(['', ''])
 
   return (
-    <div
-      className="min-h-screen p-8 pt-4 flex flex-col items-center justify-center"
-      style={{ minHeight: '100dvh' }} // ignore iOS bottom bar
-    >
-      <h1 className="text-4xl font-bold mb-1">{title}</h1>
-      <p className="text-lg text-gray-400 mb-8">{description}</p>
-
+    <>
       {/* Private inputs */}
       <PrivateInput {...{ inputs: [input1, input2], setValues }} />
 
@@ -43,6 +36,6 @@ export function Content() {
       >
         Switch to async mode
       </Link>
-    </div>
+    </>
   )
 }

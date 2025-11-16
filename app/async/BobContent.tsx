@@ -5,7 +5,6 @@ import { useEffect, useState } from 'react'
 
 import type { PlaintextData } from './binaryEncoding'
 
-import { description, title } from '../constants'
 import { BobSubmission } from './BobSubmission'
 import { Input } from './Input'
 import { ResultDisplay } from './ResultDisplay'
@@ -62,29 +61,11 @@ export function BobContent() {
       })
   }, [payload])
 
-  if (loading) {
-    return (
-      <div
-        className="min-h-screen p-8 pt-4 flex flex-col items-center justify-center"
-        style={{ minHeight: '100dvh' }}
-      >
-        <p className="text-gray-400">Validating invite...</p>
-      </div>
-    )
-  }
+  if (loading)
+    return <p className="text-gray-400 mt-8 animate-pulse">Loading invite...</p>
 
-  if (error || !aliceData) {
-    return (
-      <div
-        className="min-h-screen p-8 pt-4 flex flex-col items-center justify-center"
-        style={{ minHeight: '100dvh' }}
-      >
-        <h1 className="text-4xl font-bold mb-1">{title}</h1>
-        <p className="text-lg text-gray-400 mb-8">{description}</p>
-        <p className="text-red-400">{error || 'Invalid payload'}</p>
-      </div>
-    )
-  }
+  if (error || !aliceData)
+    return <p className="text-red-400">{error || 'Invalid payload'}</p>
 
   // Determine Bob's role (opposite of Alice's)
   // aliceData from validate only contains 'r' (role), not the full data
@@ -92,13 +73,7 @@ export function BobContent() {
   const bobRole = aliceRole === 'b' ? 'seller' : 'buyer'
 
   return (
-    <div
-      className="min-h-screen p-8 pt-4 flex flex-col items-center justify-center"
-      style={{ minHeight: '100dvh' }}
-    >
-      <h1 className="text-4xl font-bold mb-1">{title}</h1>
-      <p className="text-lg text-gray-400 mb-8">{description}</p>
-
+    <>
       {/* If results already exist (payload was used), show them immediately */}
       {existingResult ? (
         <ResultDisplay result={existingResult} />
@@ -120,6 +95,6 @@ export function BobContent() {
           onError={setError}
         />
       )}
-    </div>
+    </>
   )
 }
