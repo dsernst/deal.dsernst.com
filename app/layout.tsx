@@ -14,7 +14,7 @@ export default function RootLayout({
     <html className="dark" lang="en">
       <body className="antialiased">
         <div
-          className="min-h-screen p-8 pt-4 flex flex-col items-center justify-center"
+          className="min-h-screen p-8 pt-4 flex flex-col items-center justify-center text-center"
           style={{ minHeight: '100dvh' }} // ignore iOS bottom bar
         >
           <h1 className="text-4xl font-bold mb-1">{title}</h1>
