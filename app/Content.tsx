@@ -4,6 +4,7 @@ import { useState } from 'react'
 
 import { Calculation } from './Calculation'
 import { description, title } from './constants'
+import { LearnMoreLink } from './LearnMoreLink'
 import { ModeContainer } from './ModeSwitcher'
 import { OneShotAgreement } from './OneShotAgreement'
 import { PrivateInput } from './PrivateInput'
@@ -34,13 +35,7 @@ export function Content() {
       </ModeContainer>
 
       {/* Learn more */}
-      <a
-        className="text-sm text-gray-400 mt-16 block hover:underline"
-        href="https://github.com/dsernst/deal.dsernst.com#dealdsernstcom"
-        target="_blank"
-      >
-        Learn more
-      </a>
+      <LearnMoreLink />
     </div>
   )
 }

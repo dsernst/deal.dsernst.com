@@ -3,6 +3,7 @@
 import { useState } from 'react'
 
 import { description, title } from '../constants'
+import { LearnMoreLink } from '../LearnMoreLink'
 import { Input } from './Input'
 import { RoleSelector } from './RoleSelector'
 import { ShareUrlDisplay } from './ShareUrlDisplay'
@@ -37,13 +38,7 @@ export function Content() {
       )}
 
       {/* Learn more */}
-      <a
-        className="text-sm text-gray-400 mt-16 block hover:underline"
-        href="https://github.com/dsernst/deal.dsernst.com#dealdsernstcom"
-        target="_blank"
-      >
-        Learn more
-      </a>
+      <LearnMoreLink />
     </div>
   )
 }
