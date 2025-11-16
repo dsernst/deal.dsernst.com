@@ -40,12 +40,14 @@ export function Content() {
 
       {/* Learn more */}
       <LearnMoreLink />
-      <Link
-        className="text-sm text-gray-400 mt-1 block hover:underline"
-        href="/"
-      >
-        Switch to local-device mode
-      </Link>
+      {!signedPayload && (
+        <Link
+          className="text-sm text-gray-400 mt-1 block hover:underline"
+          href="/"
+        >
+          Switch to local-device mode
+        </Link>
+      )}
     </div>
   )
 }
