@@ -5,18 +5,19 @@ import { useRef, useState } from 'react'
 import { type Choices, roles } from './RoleSelector'
 
 export function Input({
+  label,
   onSubmit,
   role,
 }: {
+  label?: string
   onSubmit: (value: string) => void
-  role: Choices
+  role?: Choices
 }) {
   const [input, setInput] = useState('')
   const $submit = useRef<HTMLButtonElement>(null)
 
   const choice = roles.find(([r]) => r.toLowerCase() === role)
-  if (!choice) return <p>Error: Invalid role</p>
-  const [title, description] = choice
+  const [title, description] = choice || []
 
   return (
     <div className="flex gap-4">
@@ -26,7 +27,7 @@ export function Input({
           className="text-sm font-medium mb-1 text-center"
           htmlFor="alice-input"
         >
-          {title}&apos;s {description}
+          {label || `${title}'s ${description}`}
         </label>
 
         {/* Input Box */}

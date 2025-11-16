@@ -80,13 +80,18 @@ export function BobContent() {
       ) : !bobValue ? (
         <div className="flex flex-col items-center gap-4">
           <p className="text-gray-400 text-center mb-4">
-            You are the{' '}
+            You{"'"}ve been invited as a potential{' '}
             <span className="font-semibold">
               {bobRole === 'buyer' ? 'Buyer' : 'Seller'}
             </span>
-            . Enter your {bobRole === 'buyer' ? 'max offer' : 'min price'}.
+            .
           </p>
-          <Input onSubmit={setBobValue} role={bobRole} />
+          <Input
+            label={`Enter your ${
+              bobRole === 'buyer' ? 'max offer' : 'min price'
+            }:`}
+            onSubmit={setBobValue}
+          />
         </div>
       ) : (
         <BobSubmission
