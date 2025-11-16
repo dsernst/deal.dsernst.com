@@ -3,7 +3,6 @@
 import Link from 'next/link'
 import { useState } from 'react'
 
-import { description, title } from '../constants'
 import { LearnMoreLink } from '../LearnMoreLink'
 import { Input } from './Input'
 import { RoleSelector } from './RoleSelector'
@@ -19,13 +18,7 @@ export function Content() {
   const { loading, signedPayload } = useInitiatePayload(role, value)
 
   return (
-    <div
-      className="min-h-screen p-8 pt-4 flex flex-col items-center justify-center"
-      style={{ minHeight: '100dvh' }} // ignore iOS bottom bar
-    >
-      <h1 className="text-4xl font-bold mb-1">{title}</h1>
-      <p className="text-lg text-gray-400 mb-8">{description}</p>
-
+    <>
       {!role ? (
         <RoleSelector onSelect={setRole} />
       ) : !value ? (
@@ -50,6 +43,6 @@ export function Content() {
           Switch to local-device mode
         </Link>
       )}
-    </div>
+    </>
   )
 }
