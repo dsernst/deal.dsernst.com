@@ -68,7 +68,7 @@ export function BobContent() {
         className="min-h-screen p-8 pt-4 flex flex-col items-center justify-center"
         style={{ minHeight: '100dvh' }}
       >
-        <p className="text-gray-400">Validating payload...</p>
+        <p className="text-gray-400">Validating invite...</p>
       </div>
     )
   }
