@@ -5,6 +5,7 @@ import { useState } from 'react'
 
 import { LearnMoreLink } from '../LearnMoreLink'
 import { Input } from './Input'
+import { Instructions } from './Instructions'
 import { RoleSelector } from './RoleSelector'
 import { ShareUrlDisplay } from './ShareUrlDisplay'
 import { useInitiatePayload } from './useInitiatePayload'
@@ -22,7 +23,10 @@ export function Content() {
       {!role ? (
         <RoleSelector onSelect={setRole} />
       ) : !value ? (
-        <Input onSubmit={setValue} role={role} />
+        <>
+          <Input onSubmit={setValue} role={role} />
+          <Instructions />
+        </>
       ) : loading ? (
         <p className="text-gray-400">Creating your Share URL...</p>
       ) : signedPayload ? (
@@ -35,7 +39,7 @@ export function Content() {
       <LearnMoreLink />
 
       {/* Switch to local-device mode */}
-      {!signedPayload && (
+      {!role && (
         <Link
           className="text-sm text-gray-400 mt-1 block hover:underline"
           href="/"
