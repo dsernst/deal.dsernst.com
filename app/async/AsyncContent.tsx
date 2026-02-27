@@ -92,7 +92,7 @@ function TitleStep({
   return (
     <div className="flex flex-col items-center gap-4">
       <label className="text-sm text-gray-400 text-center" htmlFor="deal-title">
-        Optional title
+        Optional title:
       </label>
       <div className="flex gap-2 items-center">
         <input
