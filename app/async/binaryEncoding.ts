@@ -10,13 +10,11 @@ const MAX_TITLE_BYTES = 200
 export type PlaintextData = {
   r: 'b' | 's' // role: b=buyer, s=seller
   t: number // timestamp (minutes since epoch)
-  v: string // value
   title?: string // optional deal title (included in encrypted blob)
+  v: string // value
 }
 
-const EPOCH_2025_MINUTES = Math.floor(
-  new Date('2025-01-01T00:00:00Z').getTime() / (60 * 1000)
-)
+const EPOCH_2025_MINUTES = Math.floor(new Date('2025-01-01T00:00:00Z').getTime() / (60 * 1000))
 
 // Compact binary encoding for plaintext payload
 // Format: [1 byte: role] [3 bytes: timestamp] [varint: value]
@@ -58,20 +56,18 @@ export function decodePlaintext(buffer: Buffer): PlaintextData {
     offset += titleLen
   }
 
-  return { r: role, t: timestamp, v: valueNum.toString(), title }
+  return { r: role, t: timestamp, title, v: valueNum.toString() }
 }
 
 export function encodePlaintext(data: PlaintextData): Buffer {
   const roleByte = data.r === 's' ? 1 : 0
   const valueNum = parseInt(data.v, 10)
 
-  if (isNaN(valueNum) || valueNum < 0)
-    throw new Error('Value must be a non-negative number')
+  if (isNaN(valueNum) || valueNum < 0) throw new Error('Value must be a non-negative number')
 
   // Timestamp: minutes since 2025-01-01
   const timestampMinutes = data.t - EPOCH_2025_MINUTES
-  if (timestampMinutes < 0 || timestampMinutes > 0xffffff)
-    throw new Error('Timestamp out of range')
+  if (timestampMinutes < 0 || timestampMinutes > 0xffffff) throw new Error('Timestamp out of range')
 
   const valueVarint = encodeVarint(valueNum)
 
@@ -79,16 +75,10 @@ export function encodePlaintext(data: PlaintextData): Buffer {
   let titleBytes: Buffer | null = null
   if (data.title && data.title.trim().length > 0) {
     const raw = Buffer.from(data.title.trim(), 'utf8')
-    titleBytes =
-      raw.length > MAX_TITLE_BYTES ? raw.subarray(0, MAX_TITLE_BYTES) : raw
+    titleBytes = raw.length > MAX_TITLE_BYTES ? raw.subarray(0, MAX_TITLE_BYTES) : raw
   }
   const titleLen = titleBytes ? titleBytes.length : 0
-  const buffer = Buffer.allocUnsafe(
-    1 +
-      3 +
-      valueVarint.length +
-      (titleLen > 0 ? 1 + titleLen : 0)
-  )
+  const buffer = Buffer.allocUnsafe(1 + 3 + valueVarint.length + (titleLen > 0 ? 1 + titleLen : 0))
 
   let offset = 0
   buffer[offset++] = roleByte
@@ -115,16 +105,14 @@ function decodeVarint(buffer: Buffer, offset: { value: number }): number {
     // Check bounds before reading
     if (offset.value >= buffer.length) {
       throw new Error(
-        `Buffer overflow: reading varint at offset ${startOffset}, buffer length ${buffer.length}`
+        `Buffer overflow: reading varint at offset ${startOffset}, buffer length ${buffer.length}`,
       )
     }
 
     // Enforce maximum varint length (4 bytes)
     if (offset.value - startOffset >= maxBytes) {
       throw new Error(
-        `Varint too long: maximum ${maxBytes} bytes, read ${
-          offset.value - startOffset
-        } bytes`
+        `Varint too long: maximum ${maxBytes} bytes, read ${offset.value - startOffset} bytes`,
       )
     }
 

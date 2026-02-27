@@ -1,14 +1,8 @@
 import { describe, expect, test } from 'bun:test'
 
-import {
-  decodePlaintext,
-  encodePlaintext,
-  type PlaintextData,
-} from './binaryEncoding'
+import { decodePlaintext, encodePlaintext, type PlaintextData } from './binaryEncoding'
 
-const EPOCH_2025_MINUTES = Math.floor(
-  new Date('2025-01-01T00:00:00Z').getTime() / (60 * 1000)
-)
+const EPOCH_2025_MINUTES = Math.floor(new Date('2025-01-01T00:00:00Z').getTime() / (60 * 1000))
 
 describe('binaryEncoding', () => {
   describe('decode(encode(x)) = x', () => {
@@ -72,8 +66,8 @@ describe('binaryEncoding', () => {
       const original: PlaintextData = {
         r: 'b',
         t: EPOCH_2025_MINUTES + 1000,
-        v: '5000',
         title: 'Car sale',
+        v: '5000',
       }
 
       const encoded = encodePlaintext(original)
@@ -82,7 +76,7 @@ describe('binaryEncoding', () => {
       expect(decoded.r).toBe(original.r)
       expect(decoded.t).toBe(original.t)
       expect(decoded.v).toBe(original.v)
-      expect(decoded.title).toBe(original.title)
+      expect(decoded.title).toBe(original.title ?? '')
     })
 
     test('without title (backward compatible)', () => {
@@ -138,9 +132,7 @@ describe('binaryEncoding', () => {
         v: '-1',
       }
 
-      expect(() => encodePlaintext(data)).toThrow(
-        'Value must be a non-negative number'
-      )
+      expect(() => encodePlaintext(data)).toThrow('Value must be a non-negative number')
     })
 
     test('NaN value', () => {
@@ -150,9 +142,7 @@ describe('binaryEncoding', () => {
         v: 'not-a-number',
       }
 
-      expect(() => encodePlaintext(data)).toThrow(
-        'Value must be a non-negative number'
-      )
+      expect(() => encodePlaintext(data)).toThrow('Value must be a non-negative number')
     })
 
     test('timestamp out of range', () => {

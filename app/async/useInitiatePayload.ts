@@ -4,20 +4,14 @@ import type { CompactPayload } from './binaryEncoding'
 
 import { type Choices } from './RoleSelector'
 
-export function useInitiatePayload(
-  role: Choices | null,
-  value: null | string,
-  title?: string
-) {
+export function useInitiatePayload(role: Choices | null, value: null | string, title?: string) {
   const [loading, setLoading] = useState(false)
-  const [signedPayload, setSignedPayload] = useState<CompactPayload | null>(
-    null
-  )
+  const [signedPayload, setSignedPayload] = useState<CompactPayload | null>(null)
 
   useEffect(() => {
     if (role && value) {
       setLoading(true)
-      const body: { role: Choices; value: string; title?: string } = {
+      const body: { role: Choices; title?: string; value: string } = {
         role,
         value,
       }
@@ -37,7 +31,7 @@ export function useInitiatePayload(
           setLoading(false)
         })
     }
-  }, [role, value])
+  }, [role, value, title])
 
   return { loading, signedPayload }
 }
