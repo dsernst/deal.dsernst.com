@@ -17,20 +17,18 @@ export function Input({
   const $submit = useRef<HTMLButtonElement>(null)
 
   const choice = roles.find(([r]) => r.toLowerCase() === role)
-  const [title, description] = choice || []
+  const [roleTitle, description] = choice || []
 
   return (
     <div className="flex gap-4">
       <div className="flex flex-col">
-        {/* Label */}
         <label
           className="text-sm font-medium mb-1 text-center"
           htmlFor="alice-input"
         >
-          {label || `${title}'s ${description}`}
+          {label || `${roleTitle}'s ${description}`}
         </label>
 
-        {/* Input Box */}
         <input
           autoFocus
           className="px-3 py-2 h-20 w-40 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 no-number-controls text-3xl"
