@@ -5,10 +5,13 @@ export type CompactPayload = {
   ev: string // encryptedValue containing encrypted PlaintextData
 }
 
+const MAX_TITLE_BYTES = 200
+
 export type PlaintextData = {
   r: 'b' | 's' // role: b=buyer, s=seller
   t: number // timestamp (minutes since epoch)
   v: string // value
+  title?: string // optional deal title (included in encrypted blob)
 }
 
 const EPOCH_2025_MINUTES = Math.floor(
@@ -45,7 +48,17 @@ export function decodePlaintext(buffer: Buffer): PlaintextData {
   const valueNum = decodeVarint(buffer, valueOffset)
   offset = valueOffset.value
 
-  return { r: role, t: timestamp, v: valueNum.toString() }
+  // Optional title: length byte + UTF-8 bytes
+  let title: string | undefined
+  if (offset < buffer.length) {
+    const titleLen = buffer[offset++]
+    if (titleLen > 0 && offset + titleLen <= buffer.length) {
+      title = buffer.subarray(offset, offset + titleLen).toString('utf8')
+    }
+    offset += titleLen
+  }
+
+  return { r: role, t: timestamp, v: valueNum.toString(), title }
 }
 
 export function encodePlaintext(data: PlaintextData): Buffer {
@@ -62,10 +75,19 @@ export function encodePlaintext(data: PlaintextData): Buffer {
 
   const valueVarint = encodeVarint(valueNum)
 
+  // Optional title: 1 byte length + UTF-8 bytes (max MAX_TITLE_BYTES)
+  let titleBytes: Buffer | null = null
+  if (data.title && data.title.trim().length > 0) {
+    const raw = Buffer.from(data.title.trim(), 'utf8')
+    titleBytes =
+      raw.length > MAX_TITLE_BYTES ? raw.subarray(0, MAX_TITLE_BYTES) : raw
+  }
+  const titleLen = titleBytes ? titleBytes.length : 0
   const buffer = Buffer.allocUnsafe(
-    1 + // role
-      3 + // timestamp
-      valueVarint.length // value (varint)
+    1 +
+      3 +
+      valueVarint.length +
+      (titleLen > 0 ? 1 + titleLen : 0)
   )
 
   let offset = 0
@@ -73,6 +95,11 @@ export function encodePlaintext(data: PlaintextData): Buffer {
   buffer.writeUIntBE(timestampMinutes, offset, 3)
   offset += 3
   valueVarint.copy(buffer, offset)
+  offset += valueVarint.length
+  if (titleLen > 0) {
+    buffer[offset++] = titleLen
+    titleBytes!.copy(buffer, offset)
+  }
 
   return buffer
 }

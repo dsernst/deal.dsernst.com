@@ -68,6 +68,38 @@ describe('binaryEncoding', () => {
       }
     })
 
+    test('with optional title', () => {
+      const original: PlaintextData = {
+        r: 'b',
+        t: EPOCH_2025_MINUTES + 1000,
+        v: '5000',
+        title: 'Car sale',
+      }
+
+      const encoded = encodePlaintext(original)
+      const decoded = decodePlaintext(encoded)
+
+      expect(decoded.r).toBe(original.r)
+      expect(decoded.t).toBe(original.t)
+      expect(decoded.v).toBe(original.v)
+      expect(decoded.title).toBe(original.title)
+    })
+
+    test('without title (backward compatible)', () => {
+      const original: PlaintextData = {
+        r: 's',
+        t: EPOCH_2025_MINUTES + 500,
+        v: '100',
+      }
+
+      const encoded = encodePlaintext(original)
+      const decoded = decodePlaintext(encoded)
+
+      expect(decoded.r).toBe(original.r)
+      expect(decoded.v).toBe(original.v)
+      expect(decoded.title).toBeUndefined()
+    })
+
     test('handle buyer & seller roles', () => {
       const buyer: PlaintextData = {
         r: 'b',

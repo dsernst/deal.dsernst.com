@@ -16,6 +16,7 @@ type ValidateResponse =
   | {
       r: 'b' | 's'
       result?: { hasOverlap: boolean; result: null | number }
+      title?: string
       used: boolean
     }
 
@@ -48,7 +49,10 @@ export function BobContent() {
         setLoading(false)
         if ('error' in data) return setError(data.error)
 
-        setAliceData({ r: data.r } as PlaintextData)
+        setAliceData({
+          r: data.r,
+          ...(data.title !== undefined && { title: data.title }),
+        } as PlaintextData)
 
         // If invite already has results, show them
         if (data.used && data.result) setExistingResult(data.result)
@@ -59,13 +63,11 @@ export function BobContent() {
       })
   }, [payload])
 
-  if (loading)
-    return <p className="text-gray-400 mt-8 animate-pulse">Loading invite...</p>
+  if (loading) return <p className="text-gray-400 mt-8 animate-pulse">Loading invite...</p>
 
-  if (error || !aliceData)
-    return <p className="text-red-400">{error || 'Invalid payload'}</p>
+  if (error || !aliceData) return <p className="text-red-400">{error || 'Invalid payload'}</p>
 
-  if (existingResult) return <ResultDisplay result={existingResult} />
+  if (existingResult) return <ResultDisplay result={existingResult} title={aliceData?.title} />
 
   // Determine Bob's role (opposite of Alice's)
   const aliceRole = aliceData.r
@@ -75,17 +77,18 @@ export function BobContent() {
     <>
       {!bobsValue ? (
         <div className="flex flex-col items-center gap-4">
+          {aliceData.title && (
+            <p className="text-white font-medium text-center">
+              <i>Title: </i>
+              {aliceData.title}
+            </p>
+          )}
           <p className="text-gray-400 text-center mb-4">
             You{"'"}ve been invited as a potential{' '}
-            <span className="font-semibold">
-              {bobRole === 'buyer' ? 'Buyer' : 'Seller'}
-            </span>
-            .
+            <span className="font-semibold">{bobRole === 'buyer' ? 'Buyer' : 'Seller'}</span>.
           </p>
           <Input
-            label={`Enter your ${
-              bobRole === 'buyer' ? 'max offer' : 'min price'
-            }:`}
+            label={`Enter your ${bobRole === 'buyer' ? 'max offer' : 'min price'}:`}
             onSubmit={setBobsValue}
           />
 
@@ -94,11 +97,7 @@ export function BobContent() {
           <LearnMoreLink />
         </div>
       ) : (
-        <BobSubmission
-          alicePayload={payload!}
-          bobsValue={bobsValue}
-          onError={setError}
-        />
+        <BobSubmission alicePayload={payload!} bobsValue={bobsValue} onError={setError} />
       )}
     </>
   )

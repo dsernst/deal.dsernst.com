@@ -18,35 +18,24 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Unexpected error' }, { status: 500 })
     }
 
+    const data = result.data
+    const base = { r: data.r, title: data.title, used: false }
+
     // Check if payload has already been used (if record exists, it's been used)
     const record = await getPayloadRecord(payload)
     if (record) {
       // If results exist, return them so the page can display them
       if (record.result) {
-        return NextResponse.json({
-          r: result.data.r,
-          result: record.result,
-          used: true,
-        })
+        return NextResponse.json({ ...base, result: record.result, used: true })
       }
+
       // Otherwise, just indicate it's been used
-      return NextResponse.json(
-        { error: 'This payload has already been used' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'This payload has already been used' }, { status: 400 })
     }
 
-    // Return decrypted data (without sensitive info for client display)
-    return NextResponse.json({
-      r: result.data.r,
-      used: false,
-      // Don't send value to client - it'll be used server-side only
-    })
+    return NextResponse.json(base)
   } catch (error) {
     console.error('Error validating payload:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
