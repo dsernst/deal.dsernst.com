@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { useState } from 'react'
 
 import { LearnMoreLink } from '../LearnMoreLink'
+import { CompactPayload } from './binaryEncoding'
 import { Input } from './Input'
 import { Instructions } from './Instructions'
 import { RoleSelector } from './RoleSelector'
@@ -19,6 +20,9 @@ export function Content() {
   const [value, setValue] = useState<null | string>(null)
 
   const { loading, signedPayload } = useInitiatePayload(role, value, title)
+
+  // Share URL on its own screen once ready (or loading/error)
+  if (value) return <ShareUrlScreen {...{ loading, signedPayload }} />
 
   return (
     <>
@@ -42,23 +46,32 @@ export function Content() {
         )}
       </div>
 
-      {value &&
-        (loading ? (
-          <p className="text-gray-400 mt-4">Creating your Share URL...</p>
-        ) : signedPayload ? (
-          <ShareUrlDisplay payload={signedPayload} />
-        ) : (
-          <p className="text-red-400 mt-4">Error creating Share URL</p>
-        ))}
-
-      {/* Learn more */}
       <LearnMoreLink />
 
-      {!signedPayload && !loading && (
-        <Link className="text-sm text-gray-400 mt-1 block hover:underline" href="/">
-          Switch to local-device mode
-        </Link>
+      <Link className="text-sm text-gray-400 mt-1 block hover:underline" href="/">
+        Switch to local-device mode
+      </Link>
+    </>
+  )
+}
+
+function ShareUrlScreen({
+  loading,
+  signedPayload,
+}: {
+  loading: boolean
+  signedPayload: CompactPayload | null
+}) {
+  return (
+    <>
+      {loading ? (
+        <p className="text-gray-400">Creating your Share URL...</p>
+      ) : signedPayload ? (
+        <ShareUrlDisplay payload={signedPayload} />
+      ) : (
+        <p className="text-red-400">Error creating Share URL</p>
       )}
+      <LearnMoreLink />
     </>
   )
 }
