@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 
+import { calcRandFairResult } from '../../calcRandFairResult'
 import { decryptAndValidatePayload } from '../decryptPayload'
 import { markPayloadAsUsed, storePayloadResult } from '../payloadDb'
 
@@ -11,7 +12,7 @@ export async function POST(request: NextRequest) {
     if (!payload || !bobsValue)
       return NextResponse.json(
         { error: 'Missing required fields: payload, bobsValue' },
-        { status: 400 }
+        { status: 400 },
       )
 
     // Decrypt and validate Alice's payload
@@ -28,19 +29,14 @@ export async function POST(request: NextRequest) {
     // Atomically check if payload has been used (hash-based)
     const { wasAlreadyUsed } = await markPayloadAsUsed(payload)
     if (wasAlreadyUsed)
-      return NextResponse.json(
-        { error: 'This payload has already been used' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'This payload has already been used' }, { status: 400 })
 
     // Determine which value is seller min and which is buyer max
-    const sellerMin =
-      aliceData.r === 's' ? Number(aliceData.v) : Number(bobsValue)
-    const buyerMax =
-      aliceData.r === 'b' ? Number(aliceData.v) : Number(bobsValue)
+    const sellerMin = aliceData.r === 's' ? Number(aliceData.v) : Number(bobsValue)
+    const buyerMax = aliceData.r === 'b' ? Number(aliceData.v) : Number(bobsValue)
 
     // Run MPC calculation
-    const mpcResult = calculateMPC(sellerMin, buyerMax, overlapOnly)
+    const mpcResult = calcRandFairResult(sellerMin, buyerMax, overlapOnly)
 
     // Store result in database so it can be retrieved later
     await storePayloadResult(payload, mpcResult)
@@ -52,26 +48,6 @@ export async function POST(request: NextRequest) {
     })
   } catch (error) {
     console.error('Error completing MPC:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
-}
-
-function calculateMPC(
-  sellerMin: number,
-  buyerMax: number,
-  overlapOnly: boolean
-): { hasOverlap: boolean; result: null | number } {
-  if (sellerMin > buyerMax) return { hasOverlap: false, result: null }
-
-  if (overlapOnly) return { hasOverlap: true, result: null }
-
-  // Pick a random point in the overlap (geometric mean approach)
-  const spread = buyerMax - sellerMin
-  const randomFactor = Math.random()
-  const result = sellerMin + randomFactor * spread
-
-  return { hasOverlap: true, result }
 }

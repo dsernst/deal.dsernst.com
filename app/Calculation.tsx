@@ -1,4 +1,4 @@
-const randomFactor = Math.random() // Re-use across overlapOnly changes
+import { calcRandFairResult } from './async/calcRandFairResult'
 
 export const Calculation = ({
   input1,
@@ -14,8 +14,9 @@ export const Calculation = ({
   const sellerMinAsk = Number(input1)
   const buyerMaxBid = Number(input2)
 
-  // Report when no overlap
-  if (sellerMinAsk > buyerMaxBid) return <p>❌ No overlap, sorry</p>
+  const mpcResult = calcRandFairResult(sellerMinAsk, buyerMaxBid, overlapOnly)
+
+  if (!mpcResult.hasOverlap) return <p>❌ No overlap, sorry</p>
 
   // If overlapOnly, just report that
   if (overlapOnly)
@@ -26,15 +27,10 @@ export const Calculation = ({
       </div>
     )
 
-  // Otherwise, pick a random point in the overlap
-  const spread = buyerMaxBid - sellerMinAsk
-  const rand = randomFactor * spread
-  const result = sellerMinAsk + rand
-
   return (
     <div className="flex flex-col items-center justify-center gap-4">
       Random point between (seller_min, buyer_max):
-      <div className="text-2xl font-bold">✅ {result.toFixed(2)}</div>
+      <div className="text-2xl font-bold">✅ {mpcResult.result!.toFixed(2)}</div>
     </div>
   )
 }
